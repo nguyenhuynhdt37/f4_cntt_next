@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { login } from '@/api/axios/auth';
+import { getProfile, login } from '@/api/axios/auth';
 import { useAppDispatch } from '@/redux/hooks/reduxHooks';
 import { saveProfile } from '@/redux/slices/authSlice';
 
@@ -22,10 +22,11 @@ export default function LoginForm() {
         setIsLoading(true);
 
         try {
-            const res = await login({ username: email, password });
+            await login({ username: email, password });
+            const res = await getProfile();
             console.log(res);
-            dispatch(saveProfile(res.user));
-            router.push('/dashboard');
+            dispatch(saveProfile(res));
+            // router.push('/dashboard');
         } catch (err) {
             setError('Sai tên đăng nhập hoặc mật khẩu');
             setIsLoading(false);
