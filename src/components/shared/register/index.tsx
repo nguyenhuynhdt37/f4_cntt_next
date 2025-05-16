@@ -3,41 +3,41 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getProfile, login } from '@/api/axios/auth';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks/reduxHooks';
-import { saveProfile } from '@/redux/slices/authSlice';
-import { log } from 'console';
+import { useAppSelector } from '@/redux/hooks/reduxHooks';
 
-
-export default function LoginForm() {
+export default function RegisterForm() {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    console.log(email, password);
-    const dispatch = useAppDispatch();
     const user = useAppSelector((state: any) => state.auth.user);
-    console.log('user', user);
-    // useEffect(() => {
-    //     if (user) {
-    //         router.back();
-    //     }
-    // }, [user]);
+
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Kiểm tra mật khẩu xác nhận
+        if (password !== confirmPassword) {
+            setError('Mật khẩu xác nhận không khớp');
+            return;
+        }
+
         setError('');
         setIsLoading(true);
 
         try {
-            await login({ username: email, password });
-            const res = await getProfile();
-            console.log(res);
-            dispatch(saveProfile(res));
-            // router.back();
-        } catch (err) {
-            setError('Sai tên đăng nhập hoặc mật khẩu');
+            // Implement registration logic here
+            // For example: await register(name, email, password);
+            setTimeout(() => {
+                setIsLoading(false);
+                router.push('/login');
+            }, 2000);
+        } catch (err: any) {
+            setError(err.message || 'Đăng ký không thành công');
             setIsLoading(false);
         }
     };
@@ -56,7 +56,7 @@ export default function LoginForm() {
                     />
                     <h2 className="text-4xl font-bold text-blue-800 mb-6">Thư viện SenseLib - Tri thức cho cộng đồng</h2>
                     <p className="text-lg text-gray-700 mb-6">
-                        Kho tàng kiến thức với hàng ngàn tài liệu học tập đa dạng từ sách, giáo trình đến các nguồn tài nguyên số.
+                        Tham gia cộng đồng học tập với hàng ngàn tài liệu đa dạng từ sách, giáo trình đến các nguồn tài nguyên số.
                     </p>
                     <div className="bg-white p-6 rounded-lg shadow-md border border-blue-100">
                         <p className="text-gray-700 italic mb-4">
@@ -77,7 +77,7 @@ export default function LoginForm() {
                 </div>
             </div>
 
-            {/* Right side - login form */}
+            {/* Right side - registration form */}
             <div className="flex-1 flex items-center justify-center p-8 md:p-12">
                 <div className="w-full max-w-md">
                     <div className="md:hidden flex justify-center mb-8">
@@ -89,10 +89,10 @@ export default function LoginForm() {
                         />
                     </div>
                     <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center md:text-left">
-                        Đăng nhập vào tài khoản
+                        Đăng ký tài khoản mới
                     </h2>
                     <p className="text-gray-600 text-sm mb-8 text-center md:text-left">
-                        Truy cập vào kho tàng tài liệu học tập của chúng tôi
+                        Tạo tài khoản để truy cập vào kho tàng tài liệu học tập
                     </p>
 
                     {error && (
@@ -110,8 +110,32 @@ export default function LoginForm() {
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                                Họ và tên
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    autoComplete="name"
+                                    required
+                                    className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    placeholder="Nguyễn Văn A"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                Tên tài khoản
+                                Địa chỉ email
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -122,7 +146,7 @@ export default function LoginForm() {
                                 <input
                                     id="email"
                                     name="email"
-                                    type="text"
+                                    type="email"
                                     autoComplete="email"
                                     required
                                     className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
@@ -133,7 +157,7 @@ export default function LoginForm() {
                             </div>
                         </div>
 
-                        <div className="mt-4">
+                        <div>
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                                 Mật khẩu
                             </label>
@@ -147,7 +171,7 @@ export default function LoginForm() {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    autoComplete="current-password"
+                                    autoComplete="new-password"
                                     required
                                     className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                                     placeholder="••••••••"
@@ -155,26 +179,44 @@ export default function LoginForm() {
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
+                            <p className="mt-1 text-xs text-gray-500">Mật khẩu phải có ít nhất 8 ký tự</p>
                         </div>
 
-                        <div className="flex items-center justify-between mt-4">
-                            <div className="flex items-center">
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                                Xác nhận mật khẩu
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
                                 <input
-                                    id="remember-me"
-                                    name="remember-me"
-                                    type="checkbox"
-                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    required
+                                    className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    placeholder="••••••••"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                                    Ghi nhớ đăng nhập
-                                </label>
                             </div>
+                        </div>
 
-                            <div className="text-sm">
-                                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                                    Quên mật khẩu?
-                                </a>
-                            </div>
+                        <div className="flex items-center">
+                            <input
+                                id="terms"
+                                name="terms"
+                                type="checkbox"
+                                required
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+                                Tôi đồng ý với <a href="#" className="text-blue-600 hover:text-blue-500">Điều khoản sử dụng</a> và <a href="#" className="text-blue-600 hover:text-blue-500">Chính sách bảo mật</a>
+                            </label>
                         </div>
 
                         <div className="mt-6">
@@ -190,7 +232,7 @@ export default function LoginForm() {
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
                                 ) : null}
-                                {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                                {isLoading ? 'Đang xử lý...' : 'Đăng ký'}
                             </button>
                         </div>
                     </form>
@@ -201,7 +243,7 @@ export default function LoginForm() {
                                 <div className="w-full border-t border-gray-200"></div>
                             </div>
                             <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">Hoặc đăng nhập với</span>
+                                <span className="px-2 bg-white text-gray-500">Hoặc đăng ký với</span>
                             </div>
                         </div>
 
@@ -229,9 +271,9 @@ export default function LoginForm() {
 
                     <div className="mt-8 text-center">
                         <p className="text-sm text-gray-600">
-                            Chưa có tài khoản?{' '}
-                            <Link href="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                                Đăng ký ngay
+                            Đã có tài khoản?{' '}
+                            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+                                Đăng nhập ngay
                             </Link>
                         </p>
                     </div>
@@ -250,4 +292,4 @@ export default function LoginForm() {
             </div>
         </div>
     );
-}
+} 

@@ -5,7 +5,6 @@ import { cookies } from 'next/headers';
 import dynamic from 'next/dynamic';
 import AdminSidebar from '@/components/admin/Sidebar';
 import AdminHeader from '@/components/admin/Header';
-import { AuthProvider } from '@/components/shared/login/contexts/AuthContext';
 
 export const metadata: Metadata = {
     title: 'F8 Admin Dashboard',
@@ -25,28 +24,24 @@ export default async function AdminLayout({
     const cookieStore = await cookies();
 
     return (
-        <html lang="en">
-            <body className={lexend.className}>
-                <AuthProvider>
-                    <div className="flex h-screen bg-gray-50">
-                        {/* Sidebar */}
-                        <AdminSidebar />
 
-                        {/* Main Content */}
-                        <div className="flex flex-col flex-1 overflow-hidden">
-                            {/* Header */}
-                            <AdminHeader />
+        <div className="flex h-screen bg-gray-50">
+            {/* Sidebar */}
+            <AdminSidebar />
 
-                            {/* Main Content Area */}
-                            <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
-                                <div className="container mx-auto">
-                                    {children}
-                                </div>
-                            </main>
-                        </div>
+            {/* Main Content */}
+            <div className="flex flex-col flex-1 overflow-hidden">
+                {/* Header */}
+                <AdminHeader />
+
+                {/* Main Content Area */}
+                <main className="flex-1 overflow-y-auto p-4 bg-gray-50">
+                    <div className="container mx-auto">
+                        {children}
                     </div>
-                </AuthProvider>
-            </body>
-        </html>
+                </main>
+            </div>
+        </div>
+
     );
 }

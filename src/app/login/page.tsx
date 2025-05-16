@@ -1,4 +1,5 @@
 import LoginForm from '@/components/shared/login';
+import { getCookieString } from '@/lib/cookie';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -6,6 +7,9 @@ export const metadata: Metadata = {
     description: 'Đăng nhập vào thư viện tài liệu học tập F8 để truy cập hàng ngàn tài liệu chất lượng',
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+    const cookieString = await getCookieString();
+
+    console.log('cookieString', cookieString);
     return <LoginForm />;
 }

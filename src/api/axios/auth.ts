@@ -12,8 +12,7 @@ export const login = async ({ username, password }: LoginParams): Promise<any> =
             {
                 username,
                 password,
-            },
-            { withCredentials: true },
+            }
         );
         return res.data;
     } catch (error: any) {
@@ -21,10 +20,11 @@ export const login = async ({ username, password }: LoginParams): Promise<any> =
     }
 };
 
-export const getProfile = async (): Promise<any> => {
+export const register = async ({ username, password, email, phone, roleId }: any): Promise<any> => {
     try {
-        const res = await axiosInstance.get(
-            '/admin/users/profile',
+        const res = await axiosInstance.post(
+            '/Auth/register',
+            { username, password, email, phone, roleId },
             { withCredentials: true },
         );
         return res.data;
