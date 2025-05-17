@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { getProfile, login } from '@/api/axios/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks/reduxHooks';
 import { saveProfile } from '@/redux/slices/authSlice';
-import { log } from 'console';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 
 export default function LoginForm() {
@@ -16,14 +16,11 @@ export default function LoginForm() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     console.log(email, password);
+    const [captchaToken, setCaptchaToken] = useState('');
+    const [showCaptcha, setShowCaptcha] = useState(false);
     const dispatch = useAppDispatch();
     const user = useAppSelector((state: any) => state.auth.user);
-    console.log('user', user);
-    // useEffect(() => {
-    //     if (user) {
-    //         router.back();
-    //     }
-    // }, [user]);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,14 +28,26 @@ export default function LoginForm() {
         setIsLoading(true);
 
         try {
-            await login({ username: email, password });
+            await login({ username: email, password, captchaToken: captchaToken || null });
             const res = await getProfile();
-            console.log(res);
             dispatch(saveProfile(res));
-            // router.back();
-        } catch (err) {
-            setError('Sai tên đăng nhập hoặc mật khẩu');
+
+            if (res?.role === 'user') {
+                router.push('/');
+            } else {
+                router.push('/admin');
+            }
+        } catch (err: any) {
             setIsLoading(false);
+
+            // 👇 Bắt lỗi từ backend
+            const message = err?.response?.data?.message || 'Sai tên đăng nhập hoặc mật khẩu';
+            setError(message);
+
+            // 👇 Nếu backend báo cần CAPTCHA thì hiển thị
+            if (message.includes('CAPTCHA')) {
+                setShowCaptcha(true);
+            }
         }
     };
 
@@ -156,7 +165,12 @@ export default function LoginForm() {
                                 />
                             </div>
                         </div>
-
+                        {showCaptcha && (
+                            <ReCAPTCHA
+                                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                                onChange={(token) => setCaptchaToken(token!)}
+                            />
+                        )}
                         <div className="flex items-center justify-between mt-4">
                             <div className="flex items-center">
                                 <input
@@ -248,6 +262,6 @@ export default function LoginForm() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

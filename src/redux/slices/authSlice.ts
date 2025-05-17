@@ -29,10 +29,13 @@ const authSlice = createSlice({
         saveProfile: (state, action: PayloadAction<any>) => {
             state.user = action.payload;
         },
+        clearProfile: (state) => {
+            state.user = null;
+        },
     },
 
 });
 
-export const { clearError, saveProfile } = authSlice.actions;
+export const { clearError, saveProfile, clearProfile } = authSlice.actions;
 
 export default authSlice.reducer;

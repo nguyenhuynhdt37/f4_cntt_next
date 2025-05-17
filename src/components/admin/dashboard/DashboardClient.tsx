@@ -9,6 +9,7 @@ import {
     DocumentTextIcon,
     ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline';
+import { useAppSelector } from '@/redux/hooks/reduxHooks';
 
 // StatCard componen    t
 interface StatCardProps {
@@ -21,7 +22,8 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, change, icon, color }) => {
     const isPositive = change >= 0;
-
+    const user = useAppSelector((state: any) => state.auth.user);
+    console.log(user);
     return (
         <div className="bg-white rounded-lg shadow-md p-6 flex items-start">
             <div className="flex-grow">

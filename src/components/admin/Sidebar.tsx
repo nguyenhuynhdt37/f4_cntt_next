@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import img from 'next/img';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks/reduxHooks';
-import { logout } from '@/redux/slices/authSlice';
+// Temporary function until logout is properly implemented in authSlice
+const logout = () => ({ type: 'auth/logout' });
 import {
     Squares2X2Icon,
     UsersIcon,
@@ -14,44 +15,22 @@ import {
     ChatBubbleLeftRightIcon,
     BellIcon,
     CogIcon,
-    ChevronDownIcon,
     ArrowLeftOnRectangleIcon,
     BookmarkIcon,
+    BuildingLibraryIcon,
+    ReceiptRefundIcon,
+    UserCircleIcon,
 } from '@heroicons/react/24/outline';
 
 const menuItems = [
     { icon: <Squares2X2Icon className="h-5 w-5" />, label: 'Dashboard', path: '/admin' },
     { icon: <UsersIcon className="h-5 w-5" />, label: 'Người dùng', path: '/admin/users' },
-    {
-        icon: <BookmarkIcon className="h-5 w-5" />,
-        label: 'Thư viện',
-        path: '/admin/library',
-        submenu: [
-            { label: 'Tổng quan', path: '/admin/library' },
-            { label: 'Quản lý sách', path: '/admin/library/books' },
-            { label: 'Quản lý mượn/trả', path: '/admin/library/borrow' },
-        ]
-    },
-    {
-        icon: <BookOpenIcon className="h-5 w-5" />,
-        label: 'Khóa học',
-        path: '/admin/courses',
-        submenu: [
-            { label: 'Tất cả khóa học', path: '/admin/courses' },
-            { label: 'Thêm khóa học', path: '/admin/courses/create' },
-            { label: 'Danh mục', path: '/admin/courses/categories' },
-        ]
-    },
-    {
-        icon: <DocumentTextIcon className="h-5 w-5" />,
-        label: 'Bài viết',
-        path: '/admin/posts',
-        submenu: [
-            { label: 'Tất cả bài viết', path: '/admin/posts' },
-            { label: 'Thêm bài viết', path: '/admin/posts/create' },
-            { label: 'Danh mục', path: '/admin/posts/categories' },
-        ]
-    },
+    { icon: <BookmarkIcon className="h-5 w-5" />, label: 'Sách', path: '/admin/library/books' },
+    { icon: <DocumentTextIcon className="h-5 w-5" />, label: 'Tài liệu', path: '/admin/documents' },
+    { icon: <BookOpenIcon className="h-5 w-5" />, label: 'Danh mục', path: '/admin/categories' },
+    { icon: <DocumentTextIcon className="h-5 w-5" />, label: 'Tác giả', path: '/admin/authors' },
+    { icon: <BuildingLibraryIcon className="h-5 w-5" />, label: 'Nhà xuất bản', path: '/admin/publishers' },
+    { icon: <ReceiptRefundIcon className="h-5 w-5" />, label: 'Mượn/Trả', path: '/admin/library/borrow' },
     { icon: <ChatBubbleLeftRightIcon className="h-5 w-5" />, label: 'Bình luận', path: '/admin/comments' },
     { icon: <BellIcon className="h-5 w-5" />, label: 'Thông báo', path: '/admin/notifications' },
     { icon: <CogIcon className="h-5 w-5" />, label: 'Cài đặt', path: '/admin/settings' },
@@ -62,12 +41,7 @@ export default function AdminSidebar() {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { user } = useAppSelector(state => state.auth);
-    const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
     const [collapsed, setCollapsed] = useState(false);
-
-    const toggleSubmenu = (path: string) => {
-        setOpenSubmenu(openSubmenu === path ? null : path);
-    };
 
     const isActive = (path: string) => {
         if (path === '/admin') {
@@ -86,15 +60,18 @@ export default function AdminSidebar() {
             <div className="h-16 flex items-center justify-between px-4 border-b border-gray-200">
                 {!collapsed && (
                     <Link href="/admin" className="flex items-center">
-                        <div className="bg-blue-600 h-8 w-8 rounded-md flex items-center justify-center text-white text-lg font-bold mr-2">
-                            F8
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-500 h-8 w-8 rounded-md flex items-center justify-center text-white text-lg font-bold mr-2">
+                            <BookOpenIcon className="h-5 w-5" />
                         </div>
-                        <span className="text-gray-800 text-lg font-semibold">Admin</span>
+                        <div className="flex flex-col">
+                            <span className="text-gray-800 text-lg font-semibold leading-tight">Thư viện</span>
+                            <span className="text-xs text-gray-500 -mt-1">Quản lý</span>
+                        </div>
                     </Link>
                 )}
                 {collapsed && (
-                    <div className="mx-auto bg-blue-600 h-8 w-8 rounded-md flex items-center justify-center text-white text-lg font-bold">
-                        F8
+                    <div className="mx-auto bg-gradient-to-r from-blue-600 to-indigo-500 h-8 w-8 rounded-md flex items-center justify-center text-white">
+                        <BookOpenIcon className="h-5 w-5" />
                     </div>
                 )}
                 <button
@@ -123,56 +100,16 @@ export default function AdminSidebar() {
                 <ul className="space-y-1 px-2">
                     {menuItems.map((item) => (
                         <li key={item.path}>
-                            {item.submenu ? (
-                                <>
-                                    <button
-                                        onClick={() => toggleSubmenu(item.path)}
-                                        className={`flex items-center w-full px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${isActive(item.path)
-                                            ? 'bg-blue-50 text-blue-700'
-                                            : 'text-gray-700 hover:bg-gray-100'
-                                            }`}
-                                    >
-                                        <span className="mr-3">{item.icon}</span>
-                                        {!collapsed && (
-                                            <>
-                                                <span className="flex-grow">{item.label}</span>
-                                                <ChevronDownIcon
-                                                    className={`h-4 w-4 transition-transform duration-200 ${openSubmenu === item.path ? 'transform rotate-180' : ''
-                                                        }`}
-                                                />
-                                            </>
-                                        )}
-                                    </button>
-                                    {!collapsed && openSubmenu === item.path && (
-                                        <ul className="mt-1 pl-10 space-y-1">
-                                            {item.submenu.map((subitem) => (
-                                                <li key={subitem.path}>
-                                                    <Link
-                                                        href={subitem.path}
-                                                        className={`block px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${pathname === subitem.path
-                                                            ? 'bg-blue-50 text-blue-700'
-                                                            : 'text-gray-700 hover:bg-gray-100'
-                                                            }`}
-                                                    >
-                                                        {subitem.label}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </>
-                            ) : (
-                                <Link
-                                    href={item.path}
-                                    className={`flex items-center px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${isActive(item.path)
-                                        ? 'bg-blue-50 text-blue-700'
-                                        : 'text-gray-700 hover:bg-gray-100'
-                                        }`}
-                                >
-                                    <span className={`${collapsed ? 'mx-auto' : 'mr-3'}`}>{item.icon}</span>
-                                    {!collapsed && <span>{item.label}</span>}
-                                </Link>
-                            )}
+                            <Link
+                                href={item.path}
+                                className={`flex items-center px-3 py-2 text-sm rounded-lg transition-colors duration-200 ${isActive(item.path)
+                                    ? 'bg-blue-50 text-blue-700'
+                                    : 'text-gray-700 hover:bg-gray-100'
+                                    }`}
+                            >
+                                <span className={`${collapsed ? 'mx-auto' : 'mr-3'}`}>{item.icon}</span>
+                                {!collapsed && <span>{item.label}</span>}
+                            </Link>
                         </li>
                     ))}
                 </ul>
@@ -181,19 +118,52 @@ export default function AdminSidebar() {
             {/* User */}
             <div className="p-4 border-t border-gray-200">
                 {collapsed ? (
-                    <button
-                        onClick={() => dispatch(logout())}
-                        className="w-full flex justify-center items-center text-red-500 hover:text-red-700"
-                    >
-                        <ArrowLeftOnRectangleIcon className="h-5 w-5" />
-                    </button>
+                    <div className="flex flex-col items-center space-y-2">
+                        <div className="h-8 w-8 rounded-full overflow-hidden ring-1 ring-blue-100">
+                            {user?.avatarUrl ? (
+                                <img
+                                    src={user.avatarUrl}
+                                    alt="Avatar"
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : user?.fullName || user?.username ? (
+                                <div className="h-full w-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium text-xs">
+                                    {user?.fullName?.substring(0, 2).toUpperCase() || user?.username?.substring(0, 2).toUpperCase()}
+                                </div>
+                            ) : (
+                                <div className="h-full w-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <UserCircleIcon className="h-6 w-6" />
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => dispatch(logout())}
+                            className="text-red-500 hover:text-red-700"
+                        >
+                            <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+                        </button>
+                    </div>
                 ) : (
                     <div className="flex items-center">
-                        <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium text-sm mr-3">
-                            {user?.name?.substring(0, 2).toUpperCase() || 'AD'}
+                        <div className="h-10 w-10 rounded-full overflow-hidden mr-3 ring-2 ring-offset-1 ring-blue-100">
+                            {user?.avatarUrl ? (
+                                <img
+                                    src={user.avatarUrl}
+                                    alt={`${user?.fullName || 'Admin'} avatar`}
+                                    className="h-full w-full object-cover"
+                                />
+                            ) : user?.fullName || user?.username ? (
+                                <div className="h-full w-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium">
+                                    {user?.fullName?.substring(0, 2).toUpperCase() || user?.username?.substring(0, 2).toUpperCase()}
+                                </div>
+                            ) : (
+                                <div className="h-full w-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                    <UserCircleIcon className="h-8 w-8" />
+                                </div>
+                            )}
                         </div>
                         <div className="flex-grow">
-                            <h4 className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</h4>
+                            <h4 className="text-sm font-medium text-gray-900">{user?.fullName || user?.username || 'Admin User'}</h4>
                             <p className="text-xs text-gray-500">{user?.email || 'admin@f8.edu.vn'}</p>
                         </div>
                         <button

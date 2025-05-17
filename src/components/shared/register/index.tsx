@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAppSelector } from '@/redux/hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks/reduxHooks';
+import { getProfile, register } from '@/api/axios/auth';
+import { saveProfile } from '@/redux/slices/authSlice';
 
 export default function RegisterForm() {
-    const [name, setName] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -14,7 +17,7 @@ export default function RegisterForm() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const user = useAppSelector((state: any) => state.auth.user);
-
+    const dispatch = useAppDispatch();
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -30,12 +33,11 @@ export default function RegisterForm() {
         setIsLoading(true);
 
         try {
-            // Implement registration logic here
-            // For example: await register(name, email, password);
-            setTimeout(() => {
-                setIsLoading(false);
-                router.push('/login');
-            }, 2000);
+            await register({ username: userName, password, fullName: fullName, email: email });
+            const res = await getProfile();
+            console.log(res);
+            dispatch(saveProfile(res));
+            router.push('/');
         } catch (err: any) {
             setError(err.message || 'Đăng ký không thành công');
             setIsLoading(false);
@@ -110,7 +112,28 @@ export default function RegisterForm() {
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                            <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">
+                                Tên tài khoản
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    id="userName"
+                                    name="name"
+                                    type="text"
+                                    autoComplete="name"
+                                    required
+                                    className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                    placeholder="Nguyễn Văn A"
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
+                                />
+                            </div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 pt-2">
                                 Họ và tên
                             </label>
                             <div className="relative">
@@ -127,8 +150,8 @@ export default function RegisterForm() {
                                     required
                                     className="pl-10 appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                                     placeholder="Nguyễn Văn A"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
                                 />
                             </div>
                         </div>
