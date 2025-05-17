@@ -28,6 +28,18 @@ interface IUpdateUser {
 
 }
 
+interface IUpdateProfile {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+}
+
+interface IChangePassword {
+    currentPassword: string;
+    newPassword: string;
+}
+
 export const register = async (userData: ICreateUser): Promise<any> => {
     try {
         // Nếu có avatar, sử dụng FormData để gửi file
@@ -107,6 +119,47 @@ export const updateUser = async (id: string, userData: IUpdateUser) => {
     } catch (error: any) {
         console.error('Lỗi khi cập nhật thông tin người dùng:', error);
         throw error.response?.data || { message: 'Lỗi không xác định' };
+    }
+};
+
+export const updateProfile = async (profileData: IUpdateProfile): Promise<any> => {
+    try {
+        const res = await axiosInstance.put(
+            '/user/profile',
+            profileData,
+            {
+                withCredentials: true,
+            }
+        );
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getCurrentUser = async (): Promise<any> => {
+    try {
+        const res = await axiosInstance.get('/user/profile', {
+            withCredentials: true,
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const changePassword = async (passwordData: IChangePassword): Promise<any> => {
+    try {
+        const res = await axiosInstance.put(
+            '/user/change-password',
+            passwordData,
+            {
+                withCredentials: true,
+            }
+        );
+        return res.data;
+    } catch (error) {
+        throw error;
     }
 };
 
