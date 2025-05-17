@@ -60,11 +60,11 @@ export default function RelatedDocuments({ documents }: RelatedDocumentsProps) {
                   </span>
                 </div>
                 
-                <h3 className="font-semibold mb-3 text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   {doc.title}
                 </h3>
                 
-                <div className="text-xs text-gray-500 dark:text-gray-400 space-y-2 mt-auto">
+                <div className="text-sm text-gray-500 dark:text-gray-400 space-y-2 mt-auto">
                   <div className="flex items-center">
                     <UserIcon className="h-3 w-3 mr-1.5 text-indigo-500" />
                     <span className="truncate">{doc.author}</span>
