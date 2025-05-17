@@ -35,6 +35,11 @@ interface IUpdateProfile {
     address: string;
 }
 
+interface IChangePassword {
+    currentPassword: string;
+    newPassword: string;
+}
+
 export const register = async (userData: ICreateUser): Promise<any> => {
     try {
         // Nếu có avatar, sử dụng FormData để gửi file
@@ -137,6 +142,21 @@ export const getCurrentUser = async (): Promise<any> => {
         const res = await axiosInstance.get('/user/profile', {
             withCredentials: true,
         });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const changePassword = async (passwordData: IChangePassword): Promise<any> => {
+    try {
+        const res = await axiosInstance.put(
+            '/user/change-password',
+            passwordData,
+            {
+                withCredentials: true,
+            }
+        );
         return res.data;
     } catch (error) {
         throw error;
