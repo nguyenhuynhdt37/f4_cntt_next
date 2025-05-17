@@ -71,37 +71,37 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
 
     const getStatusBadge = (status: string) => {
         switch (status?.toLowerCase()) {
-            case 'completed':
+            case 'success':
                 return (
-                    <span className="flex items-center gap-1 text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200">
+                    <span className="flex items-center gap-1 text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200">
                         <CheckCircleIcon className="h-4 w-4" />
                         <span>Hoàn thành</span>
                     </span>
                 );
-            case 'processing':
+            case 'working':
                 return (
-                    <span className="flex items-center gap-1 text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                    <span className="flex items-center gap-1 text-sm text-blue-700 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
                         <ArrowPathIcon className="h-4 w-4 animate-spin" />
                         <span>Đang xử lý</span>
                     </span>
                 );
             case 'pending':
                 return (
-                    <span className="flex items-center gap-1 text-yellow-700 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
+                    <span className="flex items-center gap-1 text-sm text-yellow-700 bg-yellow-50 px-3 py-1 rounded-full border border-yellow-200">
                         <span>⏱️</span>
                         <span>Chờ xử lý</span>
                     </span>
                 );
-            case 'failed':
+            case 'error':
                 return (
-                    <span className="flex items-center gap-1 text-red-700 bg-red-50 px-3 py-1 rounded-full border border-red-200">
+                    <span className="flex items-center gap-1 text-sm text-red-700 bg-red-50 px-3 py-1 rounded-full border border-red-200">
                         <XCircleIcon className="h-4 w-4" />
                         <span>Thất bại</span>
                     </span>
                 );
             default:
                 return (
-                    <span className="flex items-center gap-1 text-gray-700 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
+                    <span className="flex items-center gap-1 text-sm text-gray-700 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
                         <span>Không xác định</span>
                     </span>
                 );
@@ -112,20 +112,20 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-                <p className="mt-4 text-gray-600">Đang tải thông tin tài liệu...</p>
+                <p className="mt-4 text-sm text-gray-600">Đang tải thông tin tài liệu...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-12">
+            <div className="flex text-sm flex-col items-center justify-center min-h-screen bg-gray-50 py-12">
                 <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
                     <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full">
                         <XCircleIcon className="h-6 w-6 text-red-600" />
                     </div>
                     <div className="mt-3 text-center">
-                        <h3 className="text-lg font-medium text-gray-900">Lỗi</h3>
+                        <h3 className="text-sm font-medium text-gray-900">Lỗi</h3>
                         <div className="mt-2">
                             <p className="text-sm text-gray-500">{error}</p>
                         </div>
@@ -154,28 +154,28 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                             <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg shadow-sm">
                                 <DocumentTextIcon className="h-6 w-6 text-white" />
                             </div>
-                            <h1 className="text-2xl font-bold text-gray-800">Chi tiết tài liệu</h1>
+                            <h1 className="text-xl font-bold text-gray-800">Chi tiết tài liệu</h1>
                         </div>
-                        <p className="text-gray-600 pl-10 truncate">{document?.title}</p>
+                        <p className="text-sm text-gray-600 pl-10 truncate">{document?.title}</p>
                     </div>
                     <div className="flex gap-2">
                         <Link
                             href="/admin/documents"
-                            className="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-white text-sm text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
                         >
                             <ArrowLeftIcon className="h-5 w-5" />
                             <span>Quay lại</span>
                         </Link>
                         <Link
                             href={`/admin/documents/edit/${id}`}
-                            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-indigo-50 text-sm text-indigo-700 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-colors"
                         >
                             <PencilSquareIcon className="h-5 w-5" />
                             <span>Chỉnh sửa</span>
                         </Link>
                         <button
                             onClick={handleDelete}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg border border-red-200 hover:bg-red-100 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-red-50 text-sm text-red-700 rounded-lg border border-red-200 hover:bg-red-100 transition-colors"
                         >
                             <TrashIcon className="h-5 w-5" />
                             <span>Xóa</span>
@@ -184,32 +184,32 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1  lg:grid-cols-3 gap-6">
                 {/* Thông tin tài liệu */}
                 <div className="bg-white rounded-xl shadow-sm p-6 lg:col-span-1">
-                    <h2 className="font-semibold text-lg text-gray-800 mb-4">Thông tin tài liệu</h2>
+                    <h2 className="font-semibold text-sm text-gray-800 mb-4">Thông tin tài liệu</h2>
 
                     <div className="space-y-4">
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                            {getStatusBadge(document?.conversionStatus)}
+                            {getStatusBadge(document?.summarystatus)}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-500 mb-1">Phê duyệt</p>
                                 {document?.status === 0 || document?.status === undefined ? (
-                                    <span className="flex items-center gap-1 text-yellow-700 bg-yellow-50 px-2 py-1 rounded text-sm">
+                                    <span className="flex items-center gap-1 text-sm text-yellow-700 bg-yellow-50 px-2 py-1 rounded">
                                         <span className="h-4 w-4">⏱️</span>
                                         <span>Chờ xử lý</span>
                                     </span>
                                 ) : document?.status === 1 ? (
-                                    <span className="flex items-center gap-1 text-green-700 bg-green-50 px-2 py-1 rounded text-sm">
+                                    <span className="flex items-center gap-1 text-sm text-green-700 bg-green-50 px-2 py-1 rounded">
                                         <CheckCircleIcon className="h-4 w-4" />
                                         <span>Đã phê duyệt</span>
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-1 text-red-700 bg-red-50 px-2 py-1 rounded text-sm">
+                                    <span className="flex items-center gap-1 text-sm text-red-700 bg-red-50 px-2 py-1 rounded">
                                         <XCircleIcon className="h-4 w-4" />
                                         <span>Từ chối</span>
                                     </span>
@@ -218,12 +218,12 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                             <div>
                                 <p className="text-sm text-gray-500 mb-1">Loại tài liệu</p>
                                 {document?.isPremium ? (
-                                    <span className="flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-1 rounded text-sm">
+                                    <span className="flex items-center gap-1 text-sm text-amber-700 bg-amber-50 px-2 py-1 rounded">
                                         <SparklesIcon className="h-4 w-4" />
                                         <span>Premium</span>
                                     </span>
                                 ) : (
-                                    <span className="flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-1 rounded text-sm">
+                                    <span className="flex items-center gap-1 text-sm text-blue-700 bg-blue-50 px-2 py-1 rounded">
                                         <span>📄</span>
                                         <span>Free</span>
                                     </span>
@@ -233,35 +233,35 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Tên tài liệu</p>
-                            <p className="font-medium text-gray-900">{document?.title}</p>
+                            <p className="text-sm font-medium text-gray-900">{document?.title}</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-500 mb-1">Số trang</p>
-                                <p className="font-medium text-gray-900">{document?.totalPages || 'N/A'}</p>
+                                <p className="text-sm font-medium text-gray-900">{document?.totalPages || 'N/A'}</p>
                             </div>
 
                             <div>
                                 <p className="text-sm text-gray-500 mb-1">Giới hạn xem</p>
-                                <p className="font-medium text-gray-900">{document?.previewPageLimit || 'N/A'} trang</p>
+                                <p className="text-sm font-medium text-gray-900">{document?.previewPageLimit || 'N/A'} trang</p>
                             </div>
                         </div>
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Tác giả</p>
-                            <p className="font-medium text-gray-900">{document?.author}</p>
+                            <p className="text-sm font-medium text-gray-900">{document?.author}</p>
                         </div>
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Nhà xuất bản</p>
-                            <p className="font-medium text-gray-900">{document?.publisher}</p>
+                            <p className="text-sm font-medium text-gray-900">{document?.publisher}</p>
                         </div>
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Danh mục</p>
                             <div className="mt-1">
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                                     {document?.category}
                                 </span>
                             </div>
@@ -269,12 +269,12 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Ngày tạo</p>
-                            <p className="font-medium text-gray-900">{document?.createdAt ? formatDate(document.createdAt) : 'N/A'}</p>
+                            <p className="text-sm font-medium text-gray-900">{document?.createdAt ? formatDate(document.createdAt) : 'N/A'}</p>
                         </div>
 
                         <div>
                             <p className="text-sm text-gray-500 mb-1">Ngày cập nhật</p>
-                            <p className="font-medium text-gray-900">{document?.updatedAt ? formatDate(document.updatedAt) : 'N/A'}</p>
+                            <p className="text-sm font-medium text-gray-900">{document?.updatedAt ? formatDate(document.updatedAt) : 'N/A'}</p>
                         </div>
 
                         {document?.fileUrl && (
@@ -283,7 +283,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                                     href={document.fileUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-blue-600 text-sm text-white rounded-lg hover:bg-blue-700 transition-colors"
                                 >
                                     <DocumentArrowDownIcon className="h-5 w-5" />
                                     <span>Tải xuống tài liệu gốc</span>
@@ -341,20 +341,20 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                                 ) : document?.conversionStatus === 'processing' ? (
                                     <div className="flex flex-col items-center justify-center h-96">
                                         <ArrowPathIcon className="h-12 w-12 text-blue-500 animate-spin" />
-                                        <p className="mt-4 text-lg font-medium text-gray-700">Đang xử lý tài liệu</p>
-                                        <p className="text-gray-500">Vui lòng đợi trong giây lát...</p>
+                                        <p className="mt-4 text-sm font-medium text-gray-700">Đang xử lý tài liệu</p>
+                                        <p className="text-sm text-gray-500">Vui lòng đợi trong giây lát...</p>
                                     </div>
                                 ) : document?.conversionStatus === 'failed' ? (
                                     <div className="flex flex-col items-center justify-center h-96">
                                         <XCircleIcon className="h-12 w-12 text-red-500" />
-                                        <p className="mt-4 text-lg font-medium text-gray-700">Xử lý tài liệu thất bại</p>
-                                        <p className="text-gray-500">Vui lòng thử tải lại tài liệu.</p>
+                                        <p className="mt-4 text-sm font-medium text-gray-700">Xử lý tài liệu thất bại</p>
+                                        <p className="text-sm text-gray-500">Vui lòng thử tải lại tài liệu.</p>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center h-96">
                                         <DocumentTextIcon className="h-12 w-12 text-gray-400" />
-                                        <p className="mt-4 text-lg font-medium text-gray-700">Xem trước không khả dụng</p>
-                                        <p className="text-gray-500">Tài liệu đang chờ xử lý hoặc chưa được chuyển đổi.</p>
+                                        <p className="mt-4 text-sm font-medium text-gray-700">Xem trước không khả dụng</p>
+                                        <p className="text-sm text-gray-500">Tài liệu đang chờ xử lý hoặc chưa được chuyển đổi.</p>
                                     </div>
                                 )}
                             </>
@@ -362,7 +362,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
 
                         {activeTab === 'description' && (
                             <div className="prose max-w-none">
-                                <p className="whitespace-pre-wrap">{document?.description || 'Không có mô tả cho tài liệu này.'}</p>
+                                <p className="text-sm whitespace-pre-wrap">{document?.description || 'Không có mô tả cho tài liệu này.'}</p>
                             </div>
                         )}
 
@@ -373,12 +373,12 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                                         <div key={index} className="bg-gray-50 p-4 rounded-lg">
                                             <div className="flex justify-between items-start">
                                                 <div className="flex items-start">
-                                                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm overflow-hidden">
+                                                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold overflow-hidden">
                                                         {comment.userName?.charAt(0) || 'U'}
                                                     </div>
                                                     <div className="ml-3">
                                                         <p className="text-sm font-medium text-gray-900">{comment.userName || 'Người dùng ẩn danh'}</p>
-                                                        <p className="text-xs text-gray-500">{comment.createdAt ? formatDate(comment.createdAt) : ''}</p>
+                                                        <p className="text-sm text-gray-500">{comment.createdAt ? formatDate(comment.createdAt) : ''}</p>
                                                         <p className="mt-1 text-sm text-gray-700">{comment.content}</p>
                                                     </div>
                                                 </div>
@@ -408,7 +408,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-12">
                                         <ChatBubbleLeftRightIcon className="h-12 w-12 text-gray-300" />
-                                        <p className="mt-2 text-gray-500">Chưa có bình luận nào</p>
+                                        <p className="mt-2 text-sm text-gray-500">Chưa có bình luận nào</p>
                                     </div>
                                 )}
                             </div>
