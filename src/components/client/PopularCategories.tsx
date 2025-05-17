@@ -38,7 +38,7 @@ const PopularCategories = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold mb-4">Danh mục phổ biến</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-sm">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Khám phá các tài liệu theo danh mục phổ biến từ các trường đại học và chuyên ngành khác nhau
           </p>
         </div>
@@ -50,7 +50,7 @@ const PopularCategories = () => {
         </div>
         
         <div className="text-center mt-10">
-          <Link href="/documents" className="text-sm inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
+          <Link href="/documents" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium">
             Xem tất cả danh mục
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
