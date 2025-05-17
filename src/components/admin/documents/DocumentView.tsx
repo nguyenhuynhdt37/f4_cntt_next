@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import type { JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -16,6 +17,8 @@ import {
     ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { getDocumentById, deleteDocument, deleteComment } from '@/api/axios/document';
+import PDFViewer from './PDFViewer';
+
 
 interface DocumentViewProps {
     id: string;
@@ -27,12 +30,22 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState('preview');
-
+    const [numPages, setNumPages] = useState<number | null>(null);
+    const [pageNumber, setPageNumber] = useState(1);
+    console.log(document);
     useEffect(() => {
         const fetchDocument = async () => {
             try {
                 const data = await getDocumentById(id);
                 setDocument(data);
+
+                // Special handling for direct PDF viewing (if URL is provided manually)
+                const urlParams = new URLSearchParams(window.location.search);
+                const directPdfUrl = urlParams.get('pdfUrl');
+                if (directPdfUrl) {
+                    data.pdf = directPdfUrl;
+                    data.conversionStatus = 'completed';
+                }
             } catch (err: any) {
                 setError(err.message || 'Không thể tải thông tin tài liệu');
                 console.error('Error fetching document:', err);
@@ -70,12 +83,14 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
     };
 
     const getStatusBadge = (status: string) => {
+        console.log(status);
         switch (status?.toLowerCase()) {
+
             case 'success':
                 return (
                     <span className="flex items-center gap-1 text-sm text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200">
                         <CheckCircleIcon className="h-4 w-4" />
-                        <span>Hoàn thành</span>
+                        <span>Đã chuyển đổi sang PDF</span>
                     </span>
                 );
             case 'working':
@@ -186,13 +201,13 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
 
             <div className="grid grid-cols-1  lg:grid-cols-3 gap-6">
                 {/* Thông tin tài liệu */}
-                <div className="bg-white rounded-xl shadow-sm p-6 lg:col-span-1">
+                <div className="bg-white rounded-xl sticky top-0 shadow-sm p-6 lg:col-span-1">
                     <h2 className="font-semibold text-sm text-gray-800 mb-4">Thông tin tài liệu</h2>
 
                     <div className="space-y-4">
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                             <p className="text-sm text-gray-500 mb-1">Trạng thái</p>
-                            {getStatusBadge(document?.summarystatus)}
+                            {getStatusBadge(document?.conversionStatus)}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -277,10 +292,10 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                             <p className="text-sm font-medium text-gray-900">{document?.updatedAt ? formatDate(document.updatedAt) : 'N/A'}</p>
                         </div>
 
-                        {document?.fileUrl && (
+                        {document?.pdf && (
                             <div className="mt-4 pt-4 border-t border-gray-200">
                                 <a
-                                    href={document.fileUrl}
+                                    href={document.pdf}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-blue-600 text-sm text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -324,27 +339,60 @@ const DocumentView: React.FC<DocumentViewProps> = ({ id }) => {
                             >
                                 Bình luận
                             </button>
+
+                            {/* Add direct PDF viewer link */}
+                            {document?.pdf && document.pdf.toLowerCase().endsWith('.pdf') && (
+                                <a
+                                    href={document.pdf}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`ml-auto py-4 px-6 text-sm font-medium text-blue-600 hover:text-blue-80`}
+                                >
+                                    Xem PDF toàn màn hình
+                                </a>
+                            )}
                         </nav>
                     </div>
                     <div className="p-6">
                         {activeTab === 'preview' && (
                             <>
-                                {document?.conversionStatus === 'completed' && document?.previewUrl ? (
-                                    <div className="aspect-[3/4] w-full">
-                                        <iframe
-                                            src={document.previewUrl}
-                                            className="w-full h-full border-0 rounded"
-                                            title={`Xem trước: ${document.title}`}
-                                            allow="fullscreen"
-                                        ></iframe>
+                                {document?.conversionStatus?.toLowerCase() === 'success' && (document?.pdf) ? (
+                                    <div className="aspect-[3/4] w-full h-[700px]">
+                                        {document?.pdf && document.pdf.toLowerCase().endsWith('.pdf') ? (
+                                            <div className="relative w-full h-full overflow-hidden rounded-lg shadow-lg border border-gray-200">
+                                                <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 animate-pulse" style={{ opacity: 0.7 }}></div>
+                                                <iframe
+                                                    src={`${document.pdf}#view=FitH&scrollbar=0`}
+                                                    width="100%"
+                                                    height="100%"
+                                                    style={{
+                                                        border: 'none',
+                                                        position: 'relative',
+                                                        zIndex: 10,
+                                                        backgroundColor: 'white'
+                                                    }}
+                                                    className="rounded-lg transition-all duration-300 hover:shadow-xl"
+                                                    title={document?.title || 'PDF Document'}
+                                                    loading="lazy"
+                                                    frameBorder="0"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <iframe
+                                                src={document.previewUrl || document.pdf}
+                                                className="w-full h-full border-0 rounded"
+                                                title={`Xem trước: ${document.title}`}
+                                                allow="fullscreen"
+                                            ></iframe>
+                                        )}
                                     </div>
-                                ) : document?.conversionStatus === 'processing' ? (
+                                ) : document?.conversionStatus?.toLowerCase() === 'working' ? (
                                     <div className="flex flex-col items-center justify-center h-96">
                                         <ArrowPathIcon className="h-12 w-12 text-blue-500 animate-spin" />
                                         <p className="mt-4 text-sm font-medium text-gray-700">Đang xử lý tài liệu</p>
                                         <p className="text-sm text-gray-500">Vui lòng đợi trong giây lát...</p>
                                     </div>
-                                ) : document?.conversionStatus === 'failed' ? (
+                                ) : document?.conversionStatus?.toLowerCase() === 'error' ? (
                                     <div className="flex flex-col items-center justify-center h-96">
                                         <XCircleIcon className="h-12 w-12 text-red-500" />
                                         <p className="mt-4 text-sm font-medium text-gray-700">Xử lý tài liệu thất bại</p>

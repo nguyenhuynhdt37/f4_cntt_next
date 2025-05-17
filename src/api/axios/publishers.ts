@@ -1,11 +1,11 @@
 import axiosInstance from "./store";
 
 interface IPublisherParams {
-    page: number;
-    size: number;
-    search: string;
-    sortField: string;
-    sortDirection: string;
+    page?: number;
+    size?: number;
+    search?: string;
+    sortField?: string;
+    sortDirection?: string;
 }
 
 export const getListPublisher = async ({ page, size, search, sortDirection, sortField }: IPublisherParams) => {

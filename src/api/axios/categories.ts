@@ -1,12 +1,12 @@
 import axiosInstance from "./store";
 
 interface ICategoryParams {
-    page: number;
-    size: number;
+    page?: number;
+    size?: number;
     sort?: string;
-    search: string;
-    sortField: string;
-    sortDirection: string;
+    search?: string;
+    sortField?: string;
+    sortDirection?: string;
 }
 export const getListCategory = async ({ page, size, search, sortDirection, sortField }: ICategoryParams) => {
     try {

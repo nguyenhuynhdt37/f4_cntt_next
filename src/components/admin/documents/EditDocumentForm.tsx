@@ -18,6 +18,9 @@ import {
     ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 import { getDocumentById, updateDocument } from '@/api/axios/document';
+import { getAuthorById, getListAuthor } from '@/api/axios/authors';
+import { getListPublisher } from '@/api/axios/publishers';
+import { getListCategory } from '@/api/axios/categories';
 
 interface EditDocumentProps {
     id: string;
@@ -38,7 +41,7 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
         authorId: '',
         publisherId: '',
         categoryId: '',
-        isApproved: false,
+        status: 0, // 0=Pending, 1=Approved, 2=Rejected
         isPremium: false,
         file: null as File | null,
         fileUrl: '',
@@ -46,25 +49,36 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
         totalPages: 0,
         previewPageLimit: 0
     });
-
     // Fetch document and reference data
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [documentRes, authorsRes, publishersRes, categoriesRes] = await Promise.all([
                     getDocumentById(id),
-                    fetch('/api/authors').then(res => res.json()),
-                    fetch('/api/publishers').then(res => res.json()),
-                    fetch('/api/categories').then(res => res.json())
+                    getListAuthor({}),
+                    getListPublisher({}),
+                    getListCategory({})
                 ]);
 
+                const authorItems = authorsRes?.items || [];
+                const publisherItems = publishersRes?.items || [];
+                const categoryItems = categoriesRes?.items || [];
+
+                setAuthors(authorItems);
+                setPublishers(publisherItems);
+                setCategories(categoryItems);
+
+                console.log("Document data:", documentRes);
+
+                // The backend now returns Author, Category, Publisher directly
+                // as well as their IDs as AuthorId, CategoryId, PublisherId
                 setFormData({
                     title: documentRes.title || '',
                     description: documentRes.description || '',
                     authorId: documentRes.authorId?.toString() || '',
                     publisherId: documentRes.publisherId?.toString() || '',
                     categoryId: documentRes.categoryId?.toString() || '',
-                    isApproved: documentRes.isApproved || false,
+                    status: documentRes.status || 0,
                     isPremium: documentRes.isPremium || false,
                     file: null,
                     fileUrl: documentRes.fileUrl || '',
@@ -72,10 +86,6 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                     totalPages: documentRes.totalPages || 0,
                     previewPageLimit: documentRes.previewPageLimit || 0
                 });
-
-                setAuthors(authorsRes);
-                setPublishers(publishersRes);
-                setCategories(categoriesRes);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 alert('Không thể tải thông tin tài liệu. Vui lòng thử lại sau.');
@@ -94,10 +104,17 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
         // Handle checkbox for boolean fields
         if (type === 'checkbox') {
             const checked = (e.target as HTMLInputElement).checked;
-            setFormData(prev => ({
-                ...prev,
-                [name]: checked
-            }));
+            if (name === "isApproved") {
+                setFormData(prev => ({
+                    ...prev,
+                    status: checked ? 1 : 0
+                }));
+            } else {
+                setFormData(prev => ({
+                    ...prev,
+                    [name]: checked
+                }));
+            }
         }
         // Handle file upload
         else if (type === 'file') {
@@ -184,7 +201,6 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                 authorId: parseInt(formData.authorId),
                 publisherId: parseInt(formData.publisherId),
                 categoryId: parseInt(formData.categoryId),
-                isApproved: formData.isApproved,
                 isPremium: formData.isPremium,
                 file: formData.file || undefined
             });
@@ -347,37 +363,6 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Document status information */}
-                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                                <div className="flex items-center gap-3">
-                                    {getFileIcon()}
-                                    <div>
-                                        <span className="text-sm text-gray-500">Trạng thái xử lý:</span>
-                                        <div className="mt-1">
-                                            {getConversionStatusBadge()}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    {formData.totalPages > 0 && (
-                                        <div className="text-sm bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                                            <span className="font-medium text-blue-700">{formData.totalPages}</span>
-                                            <span className="text-blue-600"> trang</span>
-                                        </div>
-                                    )}
-                                    {formData.previewPageLimit > 0 && (
-                                        <div className="text-sm bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
-                                            <span className="text-amber-600">Xem trước: </span>
-                                            <span className="font-medium text-amber-700">{formData.previewPageLimit}</span>
-                                            <span className="text-amber-600"> trang</span>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* File upload */}
                         <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Tài liệu
@@ -498,8 +483,8 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                                         className="block flex-1 border-0 bg-transparent py-2.5 px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                                     >
                                         <option value="">-- Chọn danh mục --</option>
-                                        {categories.map(category => (
-                                            <option key={category.id} value={category.id}>
+                                        {categories.map((category: any) => (
+                                            <option key={category.id} value={category.id.toString()}>
                                                 {category.name}
                                             </option>
                                         ))}
@@ -529,8 +514,8 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                                         className="block flex-1 border-0 bg-transparent py-2.5 px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                                     >
                                         <option value="">-- Chọn tác giả --</option>
-                                        {authors.map(author => (
-                                            <option key={author.id} value={author.id}>
+                                        {authors.map((author: any) => (
+                                            <option key={author.id} value={author.id.toString()}>
                                                 {author.name}
                                             </option>
                                         ))}
@@ -560,8 +545,8 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                                         className="block flex-1 border-0 bg-transparent py-2.5 px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                                     >
                                         <option value="">-- Chọn nhà xuất bản --</option>
-                                        {publishers.map(publisher => (
-                                            <option key={publisher.id} value={publisher.id}>
+                                        {publishers.map((publisher: any) => (
+                                            <option key={publisher.id} value={publisher.id.toString()}>
                                                 {publisher.name}
                                             </option>
                                         ))}
@@ -612,7 +597,7 @@ export default function EditDocumentForm({ id }: EditDocumentProps) {
                                             id="isApproved"
                                             name="isApproved"
                                             type="checkbox"
-                                            checked={formData.isApproved}
+                                            checked={formData.status === 1}
                                             onChange={handleChange}
                                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                         />
