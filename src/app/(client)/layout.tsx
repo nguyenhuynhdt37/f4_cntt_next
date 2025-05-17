@@ -1,3 +1,5 @@
+import Header from '@/components/client/Header';
+import Footer from '@/components/client/Footer';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -20,8 +22,12 @@ export default function HomeLayout({
 }) {
 
     return (
-        <main>
-            {children}
-        </main>
+        <>
+            <Header />
+                <main>
+                    {children}
+                </main>
+            <Footer />
+        </>
     )
 }
