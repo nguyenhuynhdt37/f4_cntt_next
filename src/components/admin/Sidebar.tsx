@@ -20,6 +20,7 @@ import {
     BuildingLibraryIcon,
     ReceiptRefundIcon,
     UserCircleIcon,
+    BanknotesIcon,
 } from '@heroicons/react/24/outline';
 
 const menuItems = [
@@ -31,6 +32,7 @@ const menuItems = [
     { icon: <DocumentTextIcon className="h-5 w-5" />, label: 'Tác giả', path: '/admin/authors' },
     { icon: <BuildingLibraryIcon className="h-5 w-5" />, label: 'Nhà xuất bản', path: '/admin/publishers' },
     { icon: <ReceiptRefundIcon className="h-5 w-5" />, label: 'Mượn/Trả', path: '/admin/library/borrow' },
+    { icon: <BanknotesIcon className="h-5 w-5" />, label: 'Giao dịch', path: '/admin/transactions' },
     { icon: <ChatBubbleLeftRightIcon className="h-5 w-5" />, label: 'Bình luận', path: '/admin/comments' },
     { icon: <BellIcon className="h-5 w-5" />, label: 'Thông báo', path: '/admin/notifications' },
     { icon: <CogIcon className="h-5 w-5" />, label: 'Cài đặt', path: '/admin/settings' },

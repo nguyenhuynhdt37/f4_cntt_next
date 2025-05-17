@@ -4,6 +4,10 @@ import storage from 'redux-persist/lib/storage';
 
 // Import slices
 import authReducer from './slices/authSlice';
+import bookReducer from './slices/bookSlice';
+import borrowReducer from './slices/borrowSlice';
+import libraryUsersReducer from './slices/libraryUsersSlice';
+import transactionReducer from './slices/transactionSlice';
 
 // Configure Redux Persist
 const persistConfig = {
@@ -14,6 +18,10 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    books: bookReducer,
+    borrow: borrowReducer,
+    libraryUsers: libraryUsersReducer,
+    transactions: transactionReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
