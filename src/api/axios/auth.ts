@@ -65,3 +65,34 @@ export const createUser = async ({ id, username, password, email, fullName }: an
         throw error;
     }
 };
+
+interface ResetPasswordParams {
+    token: string;
+    newPassword: string;
+}
+
+export const forgotPassword = async (email: string): Promise<any> => {
+    try {
+        const res = await axiosInstance.post(
+            '/auth/forgot-password',
+            { email },
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
+};
+
+export const resetPassword = async ({ token, newPassword }: ResetPasswordParams): Promise<any> => {
+    try {
+        const res = await axiosInstance.post(
+            '/auth/reset-password',
+            { token, newPassword },
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error: any) {
+        throw error;
+    }
+};

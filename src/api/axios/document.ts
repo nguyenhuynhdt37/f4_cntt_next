@@ -54,6 +54,15 @@ export interface IStatusUpdate {
     status: number; // 0=Pending, 1=Approved, 2=Rejected
 }
 
+// Interface for favorite documents search parameters
+export interface IFavoriteDocumentParams {
+    page: number;
+    size: number;
+    search?: string;
+    sortField?: string;
+    sortDirection?: string;
+}
+
 // Get all documents with pagination and filters
 export const getDocuments = async (params: IDocumentParams) => {
     try {
@@ -200,5 +209,51 @@ export const deleteComment = async (documentId: number | string, commentId: numb
     } catch (error: any) {
         console.error(`Lỗi khi xóa bình luận #${commentId}:`, error);
         throw error.response?.data || { message: 'Lỗi không xác định khi xóa bình luận' };
+    }
+};
+
+/**
+ * Get list of favorite documents for current user
+ */
+export const getFavoriteDocuments = async (params: IFavoriteDocumentParams): Promise<any> => {
+    try {
+        const res = await axiosInstance.get('/documents/favorites', {
+            params,
+            withCredentials: true,
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * Add a document to favorites
+ */
+export const addToFavorites = async (documentId: number | string): Promise<any> => {
+    try {
+        const res = await axiosInstance.post(
+            `/documents/${documentId}/favorite`,
+            {},
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * Remove a document from favorites
+ */
+export const removeFromFavorites = async (documentId: number | string): Promise<any> => {
+    try {
+        const res = await axiosInstance.delete(
+            `/documents/${documentId}/favorite`,
+            { withCredentials: true }
+        );
+        return res.data;
+    } catch (error) {
+        throw error;
     }
 };
