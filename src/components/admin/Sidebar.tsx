@@ -21,6 +21,7 @@ import {
     ReceiptRefundIcon,
     UserCircleIcon,
     BanknotesIcon,
+    CreditCardIcon,
 } from '@heroicons/react/24/outline';
 
 const menuItems = [

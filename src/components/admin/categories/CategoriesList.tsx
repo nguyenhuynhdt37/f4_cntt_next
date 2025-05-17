@@ -12,7 +12,7 @@ import {
     ChevronLeftIcon,
     ChevronRightIcon,
 } from '@heroicons/react/24/outline';
-import { getListCategory, togleActive } from '@/api/axios/categories';
+import { deleteCategory, getListCategory, togleActive } from '@/api/axios/categories';
 
 type Category = {
     id: number;
@@ -34,28 +34,26 @@ export default function CategoriesList() {
     const [totalItems, setTotalItems] = useState(0);
     const [togglingCategoryId, setTogglingCategoryId] = useState<number | null>(null);
     const pageSize = 10;
-
+    const fetchCategories = async () => {
+        setIsLoading(true);
+        try {
+            const res = await getListCategory({
+                page: currentPage,
+                size: pageSize,
+                search: searchQuery,
+                sortDirection: sortDirection,
+                sortField: sortField
+            });
+            setCategories(res.items);
+            setTotalPages(res.totalPages);
+            setTotalItems(res.totalItems);
+        } catch (err) {
+            console.error('Lỗi khi tải danh mục:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchCategories = async () => {
-            setIsLoading(true);
-            try {
-                const res = await getListCategory({
-                    page: currentPage,
-                    size: pageSize,
-                    search: searchQuery,
-                    sortDirection: sortDirection,
-                    sortField: sortField
-                });
-                setCategories(res.items);
-                setTotalPages(res.totalPages);
-                setTotalItems(res.totalItems);
-            } catch (err) {
-                console.error('Lỗi khi tải danh mục:', err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchCategories();
     }, [currentPage, searchQuery, sortField, sortDirection]);
 
@@ -89,6 +87,33 @@ export default function CategoriesList() {
             alert('Có lỗi xảy ra khi cập nhật trạng thái danh mục');
         } finally {
             setTogglingCategoryId(null);
+        }
+    };
+    const handleDeleteCategory = async (categoryId: number) => {
+        try {
+            await deleteCategory(categoryId);
+            const successMessage = document.createElement('div');
+            successMessage.className = 'fixed top-4 right-4 bg-white border-l-4 border-green-500 shadow-lg rounded-lg px-6 py-4 z-50 animate-fadeIn';
+            successMessage.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">
+                            Xóa danh mục thành công!
+                        </p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(successMessage);
+            await fetchCategories();
+            document.body.removeChild(successMessage);
+        } catch (error) {
+            console.error('Lỗi khi xóa danh mục:', error);
+            alert('Có lỗi xảy ra khi xóa danh mục');
         }
     };
 
@@ -249,10 +274,10 @@ export default function CategoriesList() {
                                                     <button
                                                         onClick={() => handleToggleStatus(category.id, category.isActive)}
                                                         className={`px-3 py-1.5 rounded-md font-medium text-sm shadow-sm transition-all duration-200 flex items-center gap-1.5 ${togglingCategoryId === category.id
-                                                                ? 'bg-gray-400 cursor-not-allowed text-white opacity-80'
-                                                                : category.isActive
-                                                                    ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                                                                    : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                                                            ? 'bg-gray-400 cursor-not-allowed text-white opacity-80'
+                                                            : category.isActive
+                                                                ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                                                                : 'bg-emerald-500 hover:bg-emerald-600 text-white'
                                                             }`}
                                                         title={category.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
                                                         disabled={togglingCategoryId === category.id}
@@ -284,7 +309,7 @@ export default function CategoriesList() {
 
                                                     <button
                                                         disabled={category.booksCount > 0}
-                                                        onClick={() => alert('Chức năng xóa sẽ được kết nối với API')}
+                                                        onClick={() => handleDeleteCategory(category.id)}
                                                         className={`p-1.5 rounded-md transition-colors
                                                         ${category.booksCount > 0
                                                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'

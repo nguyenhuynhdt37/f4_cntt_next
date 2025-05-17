@@ -11,6 +11,7 @@ import {
     CheckIcon,
     InformationCircleIcon,
 } from '@heroicons/react/24/outline';
+import { addCategory } from '@/api/axios/categories';
 
 export default function AddCategoryForm() {
     const router = useRouter();
@@ -75,13 +76,7 @@ export default function AddCategoryForm() {
 
         setIsSubmitting(true);
         try {
-            // This is just for UI development, will be replaced with actual API call
-            console.log('Create category:', formData);
-
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Hiển thị thông báo thành công
+            await addCategory(formData.name, formData.description, formData.isActive);
             const successMessage = document.createElement('div');
             successMessage.className = 'fixed top-4 right-4 bg-white border-l-4 border-green-500 shadow-lg rounded-lg px-6 py-4 z-50 animate-fadeIn';
             successMessage.innerHTML = `

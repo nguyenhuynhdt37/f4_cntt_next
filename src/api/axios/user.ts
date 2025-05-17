@@ -68,7 +68,7 @@ export const register = async (userData: ICreateUser): Promise<any> => {
     }
 };
 
-export const getUser = async ({ page, size, search, sortField, sortDirection }: IUserParams) => {
+export const getUser = async ({ page = 1, size = 10, search = '', sortField = 'username', sortDirection = 'asc' }: IUserParams) => {
     try {
         const response = await axiosInstance.get('/admin/users', {
             params: { page, size, search, sortField, sortDirection },

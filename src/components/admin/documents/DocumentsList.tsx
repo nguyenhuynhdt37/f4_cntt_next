@@ -450,7 +450,6 @@ export default function DocumentsList() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <button
-                                                    onClick={() => handleTogglePremium(doc.id)}
                                                     disabled={processingId === doc.id}
                                                     className={`flex items-center px-3 py-1 rounded-full text-xs font-medium 
                                                     ${processingId === doc.id
