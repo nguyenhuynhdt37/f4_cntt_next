@@ -19,7 +19,7 @@ import {
     SparklesIcon,
     ClockIcon,
 } from '@heroicons/react/24/outline';
-import { getDocuments, toggleDocumentApproval, toggleDocumentPremium, deleteDocument } from '@/api/axios/document';
+import { getDocuments, toggleDocumentPremium, deleteDocument, updateDocumentStatus } from '@/api/axios/document';
 
 type Document = {
     id: number;
@@ -30,6 +30,7 @@ type Document = {
     category: string;
     createdAt: string;
     isApproved: boolean;
+    status?: number; // 0=Pending, 1=Approved, 2=Rejected
     isPremium: boolean;
     totalPages: number;
     conversionStatus?: string;
@@ -49,14 +50,12 @@ export default function DocumentsList() {
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const [processingId, setProcessingId] = useState<number | null>(null);
-    const [approvalFilter, setApprovalFilter] = useState<string>('all');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
     const pageSize = 10;
 
     useEffect(() => {
         fetchDocuments();
-    }, [currentPage, searchQuery, sortField, sortDirection, approvalFilter]);
-
-    const fetchDocuments = async () => {
+    }, [currentPage, searchQuery, sortField, sortDirection, statusFilter]); const fetchDocuments = async () => {
         setIsLoading(true);
         try {
             // Xây dựng params cho API call
@@ -67,18 +66,12 @@ export default function DocumentsList() {
                 sortDirection: sortDirection,
                 sortField: sortField
             };
-            
+
             // Thêm tham số lọc theo trạng thái phê duyệt
-            if (approvalFilter !== 'all') {
-                if (approvalFilter === 'pending') {
-                    params.isApproved = null;
-                } else if (approvalFilter === 'approved') {
-                    params.isApproved = 1;
-                } else if (approvalFilter === 'rejected') {
-                    params.isApproved = 0;
-                }
+            if (statusFilter !== 'all') {
+                params.status = statusFilter;
             }
-            
+
             const res = await getDocuments(params);
 
             setDocuments(res.items);
@@ -105,18 +98,29 @@ export default function DocumentsList() {
         return sortDirection === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />;
     };
 
-    const handleToggleApproval = async (id: number) => {
+    const handleUpdateStatus = async (id: number, newStatus: number) => {
         if (processingId) return;
 
         setProcessingId(id);
         try {
-            await toggleDocumentApproval(id);
+            const response = await updateDocumentStatus(id, newStatus);
+
             setDocuments(documents.map(doc =>
-                doc.id === id ? { ...doc, isApproved: !doc.isApproved } : doc
+                doc.id === id ? {
+                    ...doc,
+                    status: newStatus,
+                    isApproved: newStatus === 1 // Duy trì tương thích với isApproved
+                } : doc
             ));
-        } catch (error) {
+
+            // Hiển thị thông báo từ backend
+            if (response && response.message) {
+                alert(response.message);
+            }
+        } catch (error: any) {
             console.error('Lỗi khi thay đổi trạng thái phê duyệt:', error);
-            alert('Có lỗi xảy ra khi cập nhật trạng thái phê duyệt');
+            const errorMessage = error.message || 'Có lỗi xảy ra khi cập nhật trạng thái phê duyệt';
+            alert(errorMessage);
         } finally {
             setProcessingId(null);
         }
@@ -229,24 +233,24 @@ export default function DocumentsList() {
                                 className="pl-10 pr-4 py-3 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                             />
                         </div>
-                        
+
                         <div className="w-full sm:w-auto">
-                            <select 
-                                value={approvalFilter}
+                            <select
+                                value={statusFilter}
                                 onChange={(e) => {
-                                    setApprovalFilter(e.target.value);
+                                    setStatusFilter(e.target.value);
                                     setCurrentPage(1); // reset về trang đầu khi thay đổi filter
                                 }}
                                 className="w-full py-3 px-4 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
                                 <option value="all">Tất cả trạng thái</option>
-                                <option value="pending">Chờ xử lý</option>
-                                <option value="approved">Đã phê duyệt</option>
-                                <option value="rejected">Từ chối</option>
+                                <option value="0">Chờ xử lý</option>
+                                <option value="1">Đã phê duyệt</option>
+                                <option value="2">Từ chối</option>
                             </select>
                         </div>
                     </div>
-                    
+
                     <div className="flex items-center text-sm text-gray-600 whitespace-nowrap">
                         <div className="bg-blue-100 text-blue-800 p-1.5 rounded-full mr-2">
                             <DocumentTextIcon className="h-5 w-5" />
@@ -361,34 +365,88 @@ export default function DocumentsList() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                <button
-                                                    onClick={() => handleToggleApproval(doc.id)}
-                                                    disabled={processingId === doc.id}
-                                                    className={`flex items-center px-3 py-1 rounded-full text-xs font-medium 
-                                                    ${processingId === doc.id
-                                                            ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                                                            : doc.isApproved
-                                                                ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                                                : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                                        }`}
-                                                >
-                                                    {processingId === doc.id ? (
-                                                        <>
+                                                {processingId === doc.id ? (
+                                                    <div className="flex items-center justify-center w-full">
+                                                        <div className="flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-500">
                                                             <ArrowPathIcon className="h-3 w-3 mr-1 animate-spin" />
                                                             Đang xử lý...
-                                                        </>
-                                                    ) : doc.isApproved ? (
-                                                        <>
-                                                            <CheckCircleIcon className="h-3 w-3 mr-1" />
-                                                            Đã phê duyệt
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <XCircleIcon className="h-3 w-3 mr-1" />
-                                                            Chưa duyệt
-                                                        </>
-                                                    )}
-                                                </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex flex-col space-y-2">
+                                                        {/* Status Badge */}
+                                                        <span className={`flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium w-fit
+                                                            ${doc.status === 0 || doc.status === undefined
+                                                                ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                                                                : doc.status === 1
+                                                                    ? 'bg-green-100 text-green-800 border border-green-200'
+                                                                    : 'bg-red-100 text-red-800 border border-red-200'
+                                                            }`}
+                                                        >
+                                                            {doc.status === 0 || doc.status === undefined ? (
+                                                                <>
+                                                                    <ClockIcon className="h-3 w-3 mr-1" />
+                                                                    Chờ xử lý
+                                                                </>
+                                                            ) : doc.status === 1 ? (
+                                                                <>
+                                                                    <CheckCircleIcon className="h-3 w-3 mr-1" />
+                                                                    Đã phê duyệt
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <XCircleIcon className="h-3 w-3 mr-1" />
+                                                                    Từ chối
+                                                                </>
+                                                            )}
+                                                        </span>
+
+                                                        {/* Action Buttons */}
+                                                        <div className="flex space-x-1 justify-start">
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(doc.id, 1)}
+                                                                disabled={processingId === doc.id || doc.status === 1}
+                                                                title="Phê duyệt"
+                                                                className={`flex items-center p-1 rounded transition-all
+                                                                    ${doc.status === 1
+                                                                        ? 'bg-green-50 text-green-300 cursor-not-allowed'
+                                                                        : 'bg-white text-green-600 hover:bg-green-50 hover:text-green-700 border border-green-200 hover:border-green-300'
+                                                                    }`}
+                                                            >
+                                                                <CheckCircleIcon className="h-3.5 w-3.5" />
+                                                                <span className="text-xs ml-1">Duyệt</span>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(doc.id, 0)}
+                                                                disabled={processingId === doc.id || doc.status === 0}
+                                                                title="Chờ xử lý"
+                                                                className={`flex items-center p-1 rounded transition-all
+                                                                    ${doc.status === 0
+                                                                        ? 'bg-yellow-50 text-yellow-300 cursor-not-allowed'
+                                                                        : 'bg-white text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700 border border-yellow-200 hover:border-yellow-300'
+                                                                    }`}
+                                                            >
+                                                                <ClockIcon className="h-3.5 w-3.5" />
+                                                                <span className="text-xs ml-1">Chờ</span>
+                                                            </button>
+
+                                                            <button
+                                                                onClick={() => handleUpdateStatus(doc.id, 2)}
+                                                                disabled={processingId === doc.id || doc.status === 2}
+                                                                title="Từ chối"
+                                                                className={`flex items-center p-1 rounded transition-all
+                                                                    ${doc.status === 2
+                                                                        ? 'bg-red-50 text-red-300 cursor-not-allowed'
+                                                                        : 'bg-white text-red-600 hover:bg-red-50 hover:text-red-700 border border-red-200 hover:border-red-300'
+                                                                    }`}
+                                                            >
+                                                                <XCircleIcon className="h-3.5 w-3.5" />
+                                                                <span className="text-xs ml-1">Từ chối</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <button

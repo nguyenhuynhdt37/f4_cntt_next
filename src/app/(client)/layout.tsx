@@ -20,11 +20,8 @@ export default function HomeLayout({
 }) {
     return
     (
-        <>
-
-            <main>
-                {children}
-            </main>
-        </>
+        <main>
+            {children}
+        </main>
     )
 }

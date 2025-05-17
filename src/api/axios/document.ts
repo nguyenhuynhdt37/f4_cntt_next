@@ -10,7 +10,7 @@ export interface IDocumentParams {
     categoryId?: number;
     sortField?: string;
     sortDirection?: string;
-    isApproved?: number | null;
+    status?: string;  // 0=Pending, 1=Approved, 2=Rejected
 }
 
 // Interface for document upload request
@@ -48,6 +48,11 @@ export interface IRating {
 export interface IComment {
     documentId: number;
     content: string;
+}
+
+// Interface for document status update
+export interface IStatusUpdate {
+    status: number; // 0=Pending, 1=Approved, 2=Rejected
 }
 
 // Get all documents with pagination and filters
@@ -138,14 +143,30 @@ export const deleteDocument = async (id: number | string) => {
     }
 };
 
-// Toggle document approval status
+/**
+ * @deprecated Sử dụng updateDocumentStatus thay thế
+ * Hàm này được giữ lại để đảm bảo tương thích với code cũ
+ */
 export const toggleDocumentApproval = async (id: number | string) => {
     try {
+        console.warn('toggleDocumentApproval is deprecated. Use updateDocumentStatus instead.');
         const response = await axiosInstance.put(`/admin/documents/${id}/approve`);
         return response.data;
     } catch (error: any) {
         console.error(`Lỗi khi thay đổi trạng thái phê duyệt tài liệu #${id}:`, error);
         throw error.response?.data || { message: 'Lỗi không xác định khi thay đổi trạng thái phê duyệt' };
+    }
+};
+
+// Update document approval status (0=Pending, 1=Approved, 2=Rejected)
+export const updateDocumentStatus = async (id: number | string, status: number) => {
+    try {
+        const statusData: IStatusUpdate = { status };
+        const response = await axiosInstance.put(`/admin/documents/${id}/status`, statusData);
+        return response.data;
+    } catch (error: any) {
+        console.error(`Lỗi khi cập nhật trạng thái tài liệu #${id}:`, error);
+        throw error.response?.data || { message: 'Lỗi không xác định khi cập nhật trạng thái tài liệu' };
     }
 };
 
