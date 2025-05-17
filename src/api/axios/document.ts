@@ -21,21 +21,20 @@ export interface IDocumentUpload {
     publisherId: number;
     categoryId: number;
     file: File;
-    isApproved: boolean;
+    status: number;  // 0=Pending, 1=Approved, 2=Rejected
     isPremium: boolean;
 }
 
 // Interface for document update request
 export interface IDocumentUpdate {
     id: number;
-    title?: string;
-    description?: string;
-    authorId?: number;
-    publisherId?: number;
-    categoryId?: number;
+    title: string;
+    description: string;
+    authorId: number;
+    publisherId: number;
+    categoryId: number;
+    isPremium: boolean;
     file?: File;
-    isApproved?: boolean;
-    isPremium?: boolean;
 }
 
 // Interface for document rating submission
@@ -101,10 +100,10 @@ export const uploadDocument = async (documentData: IDocumentUpload) => {
         formData.append('publisherId', documentData.publisherId.toString());
         formData.append('categoryId', documentData.categoryId.toString());
         formData.append('file', documentData.file);
-        formData.append('isApproved', documentData.isApproved.toString());
+        formData.append('status', documentData.status.toString());
         formData.append('isPremium', documentData.isPremium.toString());
 
-        const response = await axiosInstance.post('/admin/documents', formData, {
+        const response = await axiosInstance.post('/document/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -120,14 +119,15 @@ export const uploadDocument = async (documentData: IDocumentUpload) => {
 export const updateDocument = async (id: number | string, documentData: IDocumentUpdate) => {
     try {
         const formData = new FormData();
-        if (documentData.title) formData.append('title', documentData.title);
-        if (documentData.description) formData.append('description', documentData.description);
-        if (documentData.authorId) formData.append('authorId', documentData.authorId.toString());
-        if (documentData.publisherId) formData.append('publisherId', documentData.publisherId.toString());
-        if (documentData.categoryId) formData.append('categoryId', documentData.categoryId.toString());
-        if (documentData.file) formData.append('file', documentData.file);
-        if (documentData.isApproved !== undefined) formData.append('isApproved', documentData.isApproved.toString());
-        if (documentData.isPremium !== undefined) formData.append('isPremium', documentData.isPremium.toString());
+        formData.append('title', documentData.title);
+        formData.append('description', documentData.description);
+        formData.append('authorId', documentData.authorId.toString());
+        formData.append('publisherId', documentData.publisherId.toString());
+        formData.append('categoryId', documentData.categoryId.toString());
+        formData.append('isPremium', documentData.isPremium.toString());
+        if (documentData.file) {
+            formData.append('file', documentData.file);
+        }
 
         const response = await axiosInstance.put(`/admin/documents/${id}`, formData, {
             headers: {

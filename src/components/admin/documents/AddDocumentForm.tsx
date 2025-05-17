@@ -15,7 +15,10 @@ import {
     BuildingLibraryIcon,
     DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
-import { uploadDocument } from '@/api/axios/document';
+import { getDocumentById, uploadDocument } from '@/api/axios/document';
+import { getListAuthor } from '@/api/axios/authors';
+import { getListCategory } from '@/api/axios/categories';
+import { getListPublisher } from '@/api/axios/publishers';
 
 export default function AddDocumentForm() {
     const router = useRouter();
@@ -32,7 +35,7 @@ export default function AddDocumentForm() {
         authorId: '',
         publisherId: '',
         categoryId: '',
-        isApproved: false,
+        status: 0, // 0=Pending, 1=Approved, 2=Rejected
         isPremium: false,
         file: null as File | null,
     });
@@ -41,17 +44,35 @@ export default function AddDocumentForm() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // In a real app, you'd have API calls to get these
-                // For now, use import statements at the top
                 const [authorsRes, publishersRes, categoriesRes] = await Promise.all([
-                    fetch('/api/authors').then(res => res.json()),
-                    fetch('/api/publishers').then(res => res.json()),
-                    fetch('/api/categories').then(res => res.json())
+                    getListAuthor({}),
+                    getListPublisher({}),
+                    getListCategory({})
                 ]);
 
-                setAuthors(authorsRes);
-                setPublishers(publishersRes);
-                setCategories(categoriesRes);
+                console.log('Authors:', authorsRes);
+                console.log('Publishers:', publishersRes);
+                console.log('Categories:', categoriesRes);
+
+                // Check if data is available and has the expected structure
+                const authorsItems = authorsRes?.items || [];
+                const publishersItems = publishersRes?.items || [];
+                const categoriesItems = categoriesRes?.items || [];
+
+                setAuthors(authorsItems);
+                setPublishers(publishersItems);
+                setCategories(categoriesItems);
+
+                // Pre-select first item if available
+                if (authorsItems.length > 0) {
+                    setFormData(prev => ({ ...prev, authorId: authorsItems[0].id.toString() }));
+                }
+                if (publishersItems.length > 0) {
+                    setFormData(prev => ({ ...prev, publisherId: publishersItems[0].id.toString() }));
+                }
+                if (categoriesItems.length > 0) {
+                    setFormData(prev => ({ ...prev, categoryId: categoriesItems[0].id.toString() }));
+                }
             } catch (error) {
                 console.error('Error fetching reference data:', error);
             } finally {
@@ -140,7 +161,7 @@ export default function AddDocumentForm() {
 
         return newErrors;
     };
-
+    console.log(formData);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -159,7 +180,7 @@ export default function AddDocumentForm() {
                 authorId: parseInt(formData.authorId),
                 publisherId: parseInt(formData.publisherId),
                 categoryId: parseInt(formData.categoryId),
-                isApproved: formData.isApproved,
+                status: formData.status,
                 isPremium: formData.isPremium,
                 file: formData.file as File
             });
@@ -176,7 +197,7 @@ export default function AddDocumentForm() {
                     </div>
                     <div class="ml-3">
                         <p class="text-sm font-medium text-green-800">
-                            Tải tài liệu thành công! Chúng tôi đang xử lý tài liệu của bạn.
+                            Tải tài liệu thành công! Tài liệu sẽ được xử lý và chuyển đổi trong thời gian sớm nhất.
                         </p>
                     </div>
                 </div>
@@ -480,28 +501,35 @@ export default function AddDocumentForm() {
                         {/* Document options */}
                         <div className="border-t border-gray-200 pt-5">
                             <div className="flex flex-col sm:flex-row sm:gap-6">
-                                {/* Approved Status */}
-                                <div className="mb-3 sm:mb-0">
-                                    <div className="flex items-center">
-                                        <input
-                                            id="isApproved"
-                                            name="isApproved"
-                                            type="checkbox"
-                                            checked={formData.isApproved}
-                                            onChange={handleChange}
-                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                        />
-                                        <label htmlFor="isApproved" className="ml-2 block text-sm text-gray-700">
-                                            Phê duyệt ngay
-                                        </label>
-                                    </div>
+                                {/* Status Selection */}
+                                <div className="mb-3 sm:mb-0 w-full sm:w-1/2">
+                                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                                        Trạng thái<span className="text-red-500">*</span>
+                                    </label>
+                                    <select
+                                        id="status"
+                                        name="status"
+                                        value={formData.status}
+                                        onChange={(e) => {
+                                            const status = parseInt(e.target.value);
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                status
+                                            }));
+                                        }}
+                                        className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    >
+                                        <option value="0">Đang chờ duyệt (0)</option>
+                                        <option value="1">Duyệt ngay (1)</option>
+                                        <option value="2">Từ chối (2)</option>
+                                    </select>
                                     <p className="mt-1 text-xs text-gray-500">
-                                        Tài liệu sẽ được hiển thị công khai ngay sau khi tải lên
+                                        Trạng thái tài liệu sau khi tải lên. Chỉ tài liệu được duyệt mới hiển thị cho người dùng.
                                     </p>
                                 </div>
 
                                 {/* Premium Status */}
-                                <div>
+                                <div className="w-full sm:w-1/2">
                                     <div className="flex items-center">
                                         <input
                                             id="isPremium"

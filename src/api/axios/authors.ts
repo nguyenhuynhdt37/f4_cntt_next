@@ -1,12 +1,12 @@
 import axiosInstance from "./store";
 
 interface IAuthorParams {
-    page: number;
-    size: number;
+    page?: number;
+    size?: number;
     sort?: string;
-    search: string;
-    sortField: string;
-    sortDirection: string;
+    search?: string;
+    sortField?: string;
+    sortDirection?: string;
 }
 
 export const getListAuthor = async ({ page, size, search, sortDirection, sortField }: IAuthorParams) => {
