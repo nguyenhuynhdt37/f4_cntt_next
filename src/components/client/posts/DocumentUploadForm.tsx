@@ -289,8 +289,8 @@ const DocumentUploadForm: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 py-8">
             <div className="mb-8 text-center">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Đăng tải tài liệu</h1>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                    Chia sẻ kiến thức của bạn với cộng đồng. Tải lên tài liệu học tập, nghiên cứu để giúp đỡ những người khác trong hành trình học tập của họ.
+                <p className="text-gray-600 max-w-2xl mx-auto text-sm">
+                    Chia sẻ kiến thức của bạn với cộng đồng. <br /> Tải lên tài liệu học tập, nghiên cứu để giúp đỡ những người khác trong hành trình học tập của họ.
                 </p>
             </div>
 
@@ -341,7 +341,7 @@ const DocumentUploadForm: React.FC = () => {
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    className={`w-full px-3 py-2 border ${errors.title ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                                    className={`text-sm w-full px-3 py-2 border ${errors.title ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                                     placeholder="Nhập tiêu đề tài liệu"
                                 />
                                 {errors.title && (
@@ -360,7 +360,7 @@ const DocumentUploadForm: React.FC = () => {
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows={4}
-                                    className={`w-full px-3 py-2 border ${errors.description ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                                    className={`text-sm w-full px-3 py-2 border ${errors.description ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                                     placeholder="Mô tả chi tiết về nội dung tài liệu"
                                 />
                                 {errors.description && (
@@ -537,7 +537,7 @@ const DocumentUploadForm: React.FC = () => {
                         <button
                             type="submit"
                             disabled={isUploading}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            className="text-sm px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                         >
                             {isUploading ? (
                                 <div className="flex items-center justify-center">
