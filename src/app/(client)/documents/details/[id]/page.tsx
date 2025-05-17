@@ -5,6 +5,7 @@ import DocumentDetailHeader from "@/components/client/documents/details/Document
 import PDFPreview from "@/components/client/documents/details/PDFPreview";
 import DocumentInfo from "@/components/client/documents/details/DocumentInfo";
 import RelatedDocuments from "@/components/client/documents/details/RelatedDocuments";
+import DocumentComments from "@/components/client/documents/details/DocumentComments";
 
 interface PageProps {
   params: {
@@ -128,8 +129,11 @@ export default function DocumentDetailPage({ params }: PageProps) {
           <DocumentInfo document={document} />
         </div>
       </div>
+        <RelatedDocuments documents={relatedDocuments} />
       
-      <RelatedDocuments documents={relatedDocuments} />
+      <div className="mt-8">
+        <DocumentComments documentId={document.id} />
+      </div>
     </div>
   );
 }
