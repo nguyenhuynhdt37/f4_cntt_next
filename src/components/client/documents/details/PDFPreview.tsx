@@ -150,7 +150,7 @@ export default function PDFPreview({ pdfUrl, previewPages, totalPages = 0, docum
           </div>
         )}
         
-        <div className="mb-4 relative w-full max-w-2xl overflow-x-auto flex justify-center">
+        <div className="text-sm mb-4 relative w-full max-w-2xl overflow-x-auto flex justify-center">
           <div className={`${isLoading ? 'block' : 'hidden'} absolute inset-0 flex justify-center items-center bg-white dark:bg-gray-800 z-10`}>
             <div className="w-12 h-12 border-4 border-gray-300 dark:border-gray-600 border-t-indigo-600 rounded-full animate-spin"></div>
           </div>
@@ -169,7 +169,7 @@ export default function PDFPreview({ pdfUrl, previewPages, totalPages = 0, docum
               width={540 * scale}
               renderTextLayer={false}
               renderAnnotationLayer={false}
-              className="shadow-lg"
+              className="shadow-lg text-sm"
               rotate={rotation}
               loading={
                 <div className="w-12 h-12 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
