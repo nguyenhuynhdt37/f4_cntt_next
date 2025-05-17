@@ -24,9 +24,9 @@ type User = {
     role: string;
     isActive: boolean;
     createdAt: string;
-    avatarUrl?: string;
-    canDelete: boolean;
     avatar?: string;
+    canDelete: boolean;
+    isBinding: boolean;
 };
 
 type SortField = 'username' | 'email' | 'fullName' | 'role' | 'createdAt' | 'isActive';
@@ -241,9 +241,9 @@ export default function UsersList() {
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
                                                     <div className="flex-shrink-0 h-10 w-10 ring-2 ring-offset-2 ring-blue-100 rounded-full overflow-hidden shadow-sm">
-                                                        {user.avatarUrl || user.avatar ? (
+                                                        {user.avatar ? (
                                                             <img
-                                                                src={user.avatarUrl || user.avatar}
+                                                                src={user.avatar}
                                                                 alt={`${user.username} avatar`}
                                                                 className="h-10 w-10 rounded-full object-cover"
                                                             />
@@ -341,10 +341,10 @@ export default function UsersList() {
                                                     )}
 
                                                     <button
-                                                        disabled={user.canDelete}
+                                                        disabled={user.isBinding}
                                                         onClick={() => handleDeleteUser(user.id)}
-                                                        className={`p-1.5 rounded-md transition-colors ${user.canDelete ? 'cursor-not-allowed bg-amber-50 *:hover:bg-amber-100 text-amber-600 hover:text-amber-900' : " bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-900"}`}
-                                                        title="Xóa"
+                                                        className={`p-1.5 rounded-md transition-colors ${user.isBinding ? 'cursor-not-allowed bg-amber-50 hover:bg-amber-100 text-amber-600 hover:text-amber-900' : "bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-900"}`}
+                                                        title={user.isBinding ? "Không thể xóa khi có tài liệu" : "Xóa người dùng"}
                                                     >
                                                         <TrashIcon className="h-5 w-5" />
                                                     </button>
@@ -422,8 +422,7 @@ export default function UsersList() {
                         </div>
                     )}
                 </div>
-            )
-            }
-        </div >
+            )}
+        </div>
     );
 }

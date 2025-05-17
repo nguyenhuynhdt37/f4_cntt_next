@@ -13,6 +13,7 @@ import {
     ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import { getListAuthor, toggleActive, deleteAuthor } from '@/api/axios/authors';
+import { useAppSelector } from '@/redux/hooks/reduxHooks';
 
 type Author = {
     id: number;
@@ -36,7 +37,8 @@ export default function AuthorsList() {
     const [deletingAuthorId, setDeletingAuthorId] = useState<number | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const pageSize = 10;
-
+    const user = useAppSelector(state => state.auth.user);
+    console.log(user);
     useEffect(() => {
         const fetchAuthors = async () => {
             setIsLoading(true);
@@ -285,10 +287,10 @@ export default function AuthorsList() {
                                                     <button
                                                         onClick={() => handleToggleStatus(author.id, author.isActive)}
                                                         className={`px-3 py-1.5 rounded-md font-medium text-sm shadow-sm transition-all duration-200 flex items-center gap-1.5 ${togglingAuthorId === author.id
-                                                                ? 'bg-gray-400 cursor-not-allowed text-white opacity-80'
-                                                                : author.isActive
-                                                                    ? 'bg-amber-500 hover:bg-amber-600 text-white'
-                                                                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                                            ? 'bg-gray-400 cursor-not-allowed text-white opacity-80'
+                                                            : author.isActive
+                                                                ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
                                                             }`}
                                                         title={author.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
                                                         disabled={togglingAuthorId === author.id}

@@ -365,7 +365,11 @@ export default function EditAuthorForm({ id }: { id: string }) {
                             disabled={isSubmitting || authorStats.booksCount > 0}
                             type="button"
                             onClick={() => setShowDeleteConfirm(true)}
-                            className="flex items-center gap-1.5 px-5 py-2.5 bg-red-50 text-red-700 font-medium rounded-lg hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+                            className={`flex items-center gap-1.5 px-5 py-2.5 font-medium rounded-lg transition-colors
+                                ${isSubmitting || authorStats.booksCount > 0
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-70'
+                                    : 'bg-red-50 text-red-700 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500'
+                                }`}
                         >
                             <ExclamationTriangleIcon className="h-5 w-5" />
                             Xóa tác giả

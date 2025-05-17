@@ -62,3 +62,21 @@ export const togleActive = async (id: number) => {
         throw error.response?.data || { message: 'Lỗi không xác định' };
     }
 };
+export const addCategory = async (name: string, description: string, isActive: boolean) => {
+    try {
+        const response = await axiosInstance.post(`/admin/categories`, { name, description, isActive });
+        return response.data;
+    } catch (error: any) {
+        console.error('Lỗi khi gọi API lấy người dùng:', error);
+        throw error.response?.data || { message: 'Lỗi không xác định' };
+    }
+};
+export const deleteCategory = async (id: number) => {
+    try {
+        const response = await axiosInstance.delete(`/admin/categories/${id}`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Lỗi khi gọi API lấy người dùng:', error);
+        throw error.response?.data || { message: 'Lỗi không xác định' };
+    }
+};

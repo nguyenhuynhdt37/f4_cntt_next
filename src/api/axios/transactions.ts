@@ -14,83 +14,82 @@ export interface ITransactionParams {
     endDate?: string;
 }
 
-// Interface for transaction data response
-export interface ITransaction {
-    id: number;
-    userId: number;
-    userName: string;
-    userEmail: string;
-    amount: number;
-    type: string; // deposit, withdrawal, payment, refund, etc.
-    status: string; // completed, pending, failed, etc.
-    description: string;
-    reference: string; // Reference to associated entity (e.g., bookId, documentId)
-    referenceType: string; // Type of reference (e.g., 'book', 'document', 'subscription')
-    createdAt: string;
-    updatedAt: string;
+// Interface for paid users query parameters
+export interface IPaidUsersParams {
+    page: number;
+    size: number;
+    term?: string;
+    sortBy?: string; // 'amount' or 'days'
+    sortDir?: string; // 'asc' or 'desc'
 }
 
-// Interface for transaction statistics
-export interface ITransactionStatistics {
-    totalTransactions: number;
-    totalAmount: number;
-    completedTransactions: number;
-    completedAmount: number;
-    pendingTransactions: number;
-    pendingAmount: number;
-    failedTransactions: number;
-    failedAmount: number;
-    transactionsByType: {
-        type: string;
-        count: number;
-        amount: number;
-    }[];
-    transactionsByDay: {
-        date: string;
-        count: number;
-        amount: number;
-    }[];
-}
-
-// Get all transactions with pagination and filters
-export const getTransactions = async (params: ITransactionParams) => {
+// Function to get transactions
+export const getTransactions = async ({
+    page = 1,
+    size = 10,
+    search = '',
+    userId,
+    type,
+    status,
+    sortField = 'createdAt',
+    sortDirection = 'desc',
+    startDate,
+    endDate
+}: ITransactionParams) => {
     try {
-        const response = await axiosInstance.get('/transactions', { params });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
-// Get a single transaction by ID
-export const getTransactionById = async (id: number) => {
-    try {
-        const response = await axiosInstance.get(`/transactions/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
-// Get transaction statistics
-export const getTransactionStatistics = async (params?: Partial<ITransactionParams>) => {
-    try {
-        const response = await axiosInstance.get('/transactions/statistics', { params });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
-
-// Export transactions (for reports)
-export const exportTransactions = async (params?: Partial<ITransactionParams>) => {
-    try {
-        const response = await axiosInstance.get('/transactions/export', {
-            params,
-            responseType: 'blob'
+        const response = await axiosInstance.get('/admin/transactions', {
+            params: {
+                page,
+                size,
+                search,
+                userId,
+                type,
+                status,
+                sortField,
+                sortDirection,
+                startDate,
+                endDate
+            },
         });
         return response.data;
-    } catch (error) {
-        throw error;
+    } catch (error: any) {
+        console.error('Error fetching transactions:', error);
+        throw error.response?.data || { message: 'Unknown error occurred' };
     }
 };
+
+// Function to get transaction details by ID
+export const getTransactionById = async (id: string | number) => {
+    try {
+        const response = await axiosInstance.get(`/admin/transactions/${id}`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching transaction details:', error);
+        throw error.response?.data || { message: 'Unknown error occurred' };
+    }
+};
+
+// Function to get paid users
+export const getPaidUsers = async ({
+    page = 1,
+    size = 10,
+    term = '',
+    sortBy = 'amount',
+    sortDir = 'desc'
+}: IPaidUsersParams) => {
+    try {
+        const response = await axiosInstance.get('/admin/paid-users', {
+            params: {
+                page,
+                size,
+                term,
+                sortBy,
+                sortDir
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error fetching paid users:', error);
+        throw error.response?.data || { message: 'Unknown error occurred' };
+    }
+}; 
