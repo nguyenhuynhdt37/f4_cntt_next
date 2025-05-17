@@ -106,11 +106,11 @@ export default function DocumentDetailHeader({ document }: DocumentDetailHeaderP
             {document.title}
           </h1>
           
-          <p className="text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-gray-600 text-sm dark:text-gray-300 mb-4">
             {document.description}
           </p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-4 mb-6">
+          <div className="text-sm grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-2 gap-x-4 mb-6 mt-10">
             <div className="flex items-center text-gray-600 dark:text-gray-300">
               <User className="h-4 w-4 mr-2" />
               <span>{document.author}</span>
@@ -129,8 +129,9 @@ export default function DocumentDetailHeader({ document }: DocumentDetailHeaderP
             </div>
           </div>
           
-          <div className="flex flex-wrap gap-3">            <Button 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          <div className="flex flex-wrap gap-3">            
+            <Button 
+              className="bg-indigo-600 cursor-pointer hover:bg-indigo-700 text-white"
               size="lg"
               onClick={downloadDocument}
               disabled={isDownloading}
@@ -145,7 +146,7 @@ export default function DocumentDetailHeader({ document }: DocumentDetailHeaderP
               variant="outline"
               size="lg"
               onClick={toggleFavorite}
-              className="border-gray-300 dark:border-gray-600"
+              className="border-gray-300 cursor-pointer dark:border-gray-600"
             >
               {isFavorite ? (
                 <>

@@ -38,7 +38,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
         Thông tin chi tiết
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-3">
           <div className="flex items-start group">
             <UserIcon className="h-5 w-5 text-indigo-500 group-hover:text-indigo-600 mt-0.5 mr-3 transition-colors" />
