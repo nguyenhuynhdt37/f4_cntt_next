@@ -35,7 +35,7 @@ export default function DocumentInfo({ document }: DocumentInfoProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
       <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white border-b pb-2 border-gray-200 dark:border-gray-700">
-        Thông tin chi tiết
+        Thông tin chi tiết!
       </h2>
       
       <div className="text-sm grid grid-cols-1 md:grid-cols-2 gap-4">
