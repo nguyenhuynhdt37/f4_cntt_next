@@ -1,0 +1,26 @@
+<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grad1)"/>
+  <g fill="#fff" transform="translate(400,200)">
+    <text font-family="Arial" font-size="48" text-anchor="middle">Thư viện sách</text>
+    <g transform="translate(0,100)">
+      <rect x="-150" y="-50" width="300" height="100" fill="#ffffff20" rx="10" ry="10"/>
+      <rect x="-130" y="-30" width="260" height="20" fill="#ffffff40" rx="5" ry="5"/>
+      <rect x="-130" y="0" width="260" height="20" fill="#ffffff40" rx="5" ry="5"/>
+    </g>
+  </g>
+  <g transform="translate(200,400)">
+    <rect x="0" y="0" width="100" height="130" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="120" y="30" width="100" height="100" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="240" y="10" width="100" height="120" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="360" y="20" width="100" height="110" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="480" y="0" width="100" height="130" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="600" y="15" width="100" height="115" fill="#ffffff30" rx="5" ry="5"/>
+    <rect x="720" y="25" width="100" height="105" fill="#ffffff30" rx="5" ry="5"/>
+  </g>
+</svg>
