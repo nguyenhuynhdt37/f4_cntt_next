@@ -23,6 +23,7 @@ export interface IDocumentUpload {
     file: File;
     status: number;  // 0=Pending, 1=Approved, 2=Rejected
     isPremium: boolean;
+    score: number;   // Score for the document (0 means free to read)
 }
 
 // Interface for document update request
@@ -34,6 +35,7 @@ export interface IDocumentUpdate {
     publisherId: number;
     categoryId: number;
     isPremium: boolean;
+    score: number;   // Score for the document (0 means free to read)
     file?: File;
 }
 
@@ -98,10 +100,10 @@ export const uploadDocument = async (documentData: IDocumentUpload) => {
         formData.append('description', documentData.description);
         formData.append('authorId', documentData.authorId.toString());
         formData.append('publisherId', documentData.publisherId.toString());
-        formData.append('categoryId', documentData.categoryId.toString());
-        formData.append('file', documentData.file);
+        formData.append('categoryId', documentData.categoryId.toString()); formData.append('file', documentData.file);
         formData.append('status', documentData.status.toString());
         formData.append('isPremium', documentData.isPremium.toString());
+        formData.append('score', documentData.score.toString());
 
         const response = await axiosInstance.post('/document/upload', formData, {
             headers: {
@@ -120,11 +122,11 @@ export const updateDocument = async (id: number | string, documentData: IDocumen
     try {
         const formData = new FormData();
         formData.append('title', documentData.title);
-        formData.append('description', documentData.description);
-        formData.append('authorId', documentData.authorId.toString());
+        formData.append('description', documentData.description); formData.append('authorId', documentData.authorId.toString());
         formData.append('publisherId', documentData.publisherId.toString());
         formData.append('categoryId', documentData.categoryId.toString());
         formData.append('isPremium', documentData.isPremium.toString());
+        formData.append('score', documentData.score.toString());
         if (documentData.file) {
             formData.append('file', documentData.file);
         }

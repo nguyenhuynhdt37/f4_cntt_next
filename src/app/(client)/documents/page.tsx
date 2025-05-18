@@ -15,7 +15,6 @@ export default function DocumentsPage() {
     category: "all",
     sortBy: "newest",
   });
-
   // Mock data - replace with actual API call
   const documents = [
     {
@@ -30,8 +29,9 @@ export default function DocumentsPage() {
       author: "TS. Nguyễn Văn A",
       thumbnailUrl: "/images/documents/cpp-book.jpg",
       color: "bg-gradient-to-r from-blue-500 to-cyan-400",
-    },
-    {
+      isPremium: false,
+      score: 0,
+    }, {
       id: "2",
       title: "Hướng dẫn sử dụng React",
       description: "Tài liệu hướng dẫn React từ cơ bản đến nâng cao",
@@ -43,8 +43,9 @@ export default function DocumentsPage() {
       author: "ThS. Trần Thị B",
       thumbnailUrl: "/images/documents/react-book.jpg",
       color: "bg-gradient-to-r from-purple-500 to-pink-400",
-    },
-    {
+      isPremium: true,
+      score: 10,
+    }, {
       id: "4",
       title: "Trí tuệ nhân tạo cơ bản",
       description: "Nhập môn về AI và Machine Learning",
@@ -56,8 +57,9 @@ export default function DocumentsPage() {
       author: "GS.TS Phạm Thị D",
       thumbnailUrl: "/images/documents/ai-book.jpg",
       color: "bg-gradient-to-r from-red-500 to-orange-400",
-    },
-    {
+      isPremium: true,
+      score: 25,
+    }, {
       id: "3",
       title: "Cơ sở dữ liệu nâng cao",
       description: "Tài liệu về các kỹ thuật tối ưu và thiết kế CSDL",
@@ -69,8 +71,10 @@ export default function DocumentsPage() {
       author: "PGS.TS Lê Văn C",
       thumbnailUrl: "/images/documents/database-book.jpg",
       color: "bg-gradient-to-r from-green-500 to-emerald-400",
+      isPremium: true,
+      score: 50,
     },
-    
+
   ];
 
   const handleSearch = (query: string) => {
