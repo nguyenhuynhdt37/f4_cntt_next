@@ -8,8 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage() {
-    const cookieString = await getCookieString();
 
-    console.log('cookieString', cookieString);
     return <LoginForm />;
 }

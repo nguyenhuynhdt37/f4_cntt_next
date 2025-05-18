@@ -13,7 +13,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { BellIcon as BellSolidIcon } from '@heroicons/react/24/solid';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks/reduxHooks';
-import { logout } from '@/redux/slices/authSlice';
 
 export default function AdminHeader() {
     const [showNotifications, setShowNotifications] = useState(false);
@@ -101,15 +100,41 @@ export default function AdminHeader() {
 
                     {/* User profile */}
                     <div className="relative inline-block">
-                        <button className="flex items-center space-x-3">
+                        <button
+                            className="flex items-center space-x-3"
+                            onClick={() => setShowUserDropdown(!showUserDropdown)}
+                        >
                             <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
-                                A
+                                {user?.fullName ? user.fullName.charAt(0) : 'A'}
                             </div>
                             <div className="hidden md:block text-left">
-                                <h3 className="text-sm font-medium text-gray-700">Admin User</h3>
-                                <p className="text-xs text-gray-500">Quản trị viên</p>
+                                <h3 className="text-sm font-medium text-gray-700">{user?.fullName || 'Admin User'}</h3>
+                                <p className="text-xs text-gray-500">{user?.role || 'Quản trị viên'}</p>
                             </div>
                         </button>
+
+                        {/* User dropdown */}
+                        {showUserDropdown && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-30">
+                                <div className="p-3 border-b border-gray-200">
+                                    <p className="text-sm font-medium text-gray-900">{user?.fullName || 'Admin User'}</p>
+                                    <p className="text-xs text-gray-500">{user?.email || 'admin@example.com'}</p>
+                                </div>
+                                <div className="py-1">
+                                    <Link href="/admin/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <UserCircleIcon className="h-4 w-4 mr-2 text-gray-500" />
+                                        Hồ sơ cá nhân
+                                    </Link>
+                                    <button
+                                        onClick={() => dispatch(logout())}
+                                        className="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        <ArrowLeftOnRectangleIcon className="h-4 w-4 mr-2 text-gray-500" />
+                                        Đăng xuất
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Mobile menu button */}

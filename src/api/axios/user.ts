@@ -182,3 +182,12 @@ export const deleteUser = async (id: string) => {
         throw error.response?.data || { message: 'Lỗi không xác định' };
     }
 };
+export const logOutUser = async () => {
+    try {
+        const response = await axiosInstance.post(`/Auth/logout`);
+        return response.data;
+    } catch (error: any) {
+        console.error('Lỗi khi xóa người dùng:', error);
+        throw error.response?.data || { message: 'Lỗi không xác định' };
+    }
+};
