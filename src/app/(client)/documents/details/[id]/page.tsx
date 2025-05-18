@@ -49,7 +49,7 @@ export default function DocumentDetailPage({ params }: PageProps) {
           isbn: "978-604-XX-XXXX-X",
           pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
           isPremium: false,
-          score: 0 // Miễn phí
+          score: 0 // Miễn phí tải liệu
         };
       } else if (params.id === "2") {
         // Tài liệu premium với 10 điểm
