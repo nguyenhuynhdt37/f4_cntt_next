@@ -1,10 +1,15 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Lexend } from 'next/font/google';
-import { cookies } from 'next/headers';
 import dynamic from 'next/dynamic';
 import { ReduxProvider } from '@/redux/provider';
+import { getCookieString } from '@/lib/cookie';
 
+// Import AuthChecker (sử dụng dynamic để không ảnh hưởng đến SSR)
+const AuthChecker = dynamic(() => import('@/components/auth/AuthChecker'), {
+  ssr: true,
+});
 
 export const metadata: Metadata = {
   title: 'F8',
@@ -21,15 +26,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-
+  const cookieString = await getCookieString();
   return (
     <html lang="en">
       <body className={lexend.className}>
         <ReduxProvider>
-          <main>
-            {children}
-          </main>
+          <AuthChecker cookieString={cookieString}>
+            <main>
+              {children}
+            </main>
+          </AuthChecker>
         </ReduxProvider>
       </body>
     </html>
