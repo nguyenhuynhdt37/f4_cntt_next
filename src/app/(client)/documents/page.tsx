@@ -15,7 +15,6 @@ export default function DocumentsPage() {
     category: "all",
     sortBy: "newest",
   });
-
   // Mock data - replace with actual API call
   const documents = [
     {
@@ -27,11 +26,13 @@ export default function DocumentsPage() {
       uploadDate: "2023-08-15",
       fileSize: "3.5MB",
       fileType: "pdf",
-      author: "TS. Nguyễn Văn A",
-      thumbnailUrl: "/images/documents/cpp-book.jpg",
+      author: "TS. Nguyễn Văn A", thumbnailUrl: "/images/documents/cpp-book.jpg",
       color: "bg-gradient-to-r from-blue-500 to-cyan-400",
-    },
-    {
+      isPremium: false,
+      score: 0,
+      averageRating: 4.2,
+      totalRatings: 45,
+    }, {
       id: "2",
       title: "Hướng dẫn sử dụng React",
       description: "Tài liệu hướng dẫn React từ cơ bản đến nâng cao",
@@ -40,11 +41,13 @@ export default function DocumentsPage() {
       uploadDate: "2024-01-10",
       fileSize: "2.8MB",
       fileType: "pdf",
-      author: "ThS. Trần Thị B",
-      thumbnailUrl: "/images/documents/react-book.jpg",
+      author: "ThS. Trần Thị B", thumbnailUrl: "/images/documents/react-book.jpg",
       color: "bg-gradient-to-r from-purple-500 to-pink-400",
-    },
-    {
+      isPremium: true,
+      score: 10,
+      averageRating: 4.8,
+      totalRatings: 75,
+    }, {
       id: "4",
       title: "Trí tuệ nhân tạo cơ bản",
       description: "Nhập môn về AI và Machine Learning",
@@ -53,11 +56,13 @@ export default function DocumentsPage() {
       uploadDate: "2024-02-05",
       fileSize: "5.1MB",
       fileType: "pdf",
-      author: "GS.TS Phạm Thị D",
-      thumbnailUrl: "/images/documents/ai-book.jpg",
+      author: "GS.TS Phạm Thị D", thumbnailUrl: "/images/documents/ai-book.jpg",
       color: "bg-gradient-to-r from-red-500 to-orange-400",
-    },
-    {
+      isPremium: true,
+      score: 25,
+      averageRating: 4.0,
+      totalRatings: 18,
+    }, {
       id: "3",
       title: "Cơ sở dữ liệu nâng cao",
       description: "Tài liệu về các kỹ thuật tối ưu và thiết kế CSDL",
@@ -66,11 +71,14 @@ export default function DocumentsPage() {
       uploadDate: "2023-11-20",
       fileSize: "4.2MB",
       fileType: "pdf",
-      author: "PGS.TS Lê Văn C",
-      thumbnailUrl: "/images/documents/database-book.jpg",
+      author: "PGS.TS Lê Văn C", thumbnailUrl: "/images/documents/database-book.jpg",
       color: "bg-gradient-to-r from-green-500 to-emerald-400",
+      isPremium: true,
+      score: 50,
+      averageRating: 4.5,
+      totalRatings: 32,
     },
-    
+
   ];
 
   const handleSearch = (query: string) => {

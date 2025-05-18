@@ -5,7 +5,9 @@ import { Download, FileText, Calendar, User } from "lucide-react";
 import { Badge } from "../../../components/ui/badge";
 import { Card, CardContent, CardFooter } from "../../../components/ui/card";
 import Image from "next/image";
+import Link from 'next/link';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import StarRating from './StarRating';
 
 interface Document {
   id: string;
@@ -19,16 +21,21 @@ interface Document {
   author: string;
   thumbnailUrl: string;
   color: string;
+  isPremium?: boolean;
+  score?: number;
+  averageRating?: number;
+  totalRatings?: number;
 }
 
 interface DocumentGridProps {
   documents: Document[];
 }
 
-export default function DocumentGrid({ documents }: DocumentGridProps) {  const [favorites, setFavorites] = useState<string[]>([]);
-  const [truncatedDescriptions, setTruncatedDescriptions] = useState<{[key: string]: boolean}>({});
-  const descriptionRefs = useRef<{[key: string]: HTMLParagraphElement | null}>({});
-  
+export default function DocumentGrid({ documents }: DocumentGridProps) {
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [truncatedDescriptions, setTruncatedDescriptions] = useState<{ [key: string]: boolean }>({});
+  const descriptionRefs = useRef<{ [key: string]: HTMLParagraphElement | null }>({});
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("vi-VN", {
@@ -37,28 +44,28 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {  const 
       year: "numeric",
     }).format(date);
   };
-  
+
   // Kiểm tra xem mô tả có bị cắt hay không
   useEffect(() => {
     const checkTruncation = () => {
-      const newTruncated: {[key: string]: boolean} = {};
-      
+      const newTruncated: { [key: string]: boolean } = {};
+
       Object.keys(descriptionRefs.current).forEach(id => {
         const element = descriptionRefs.current[id];
         if (element) {
           newTruncated[id] = element.scrollHeight > element.clientHeight;
         }
       });
-      
+
       setTruncatedDescriptions(newTruncated);
     };
-    
+
     checkTruncation();
     window.addEventListener('resize', checkTruncation);
-    
+
     return () => window.removeEventListener('resize', checkTruncation);
   }, [documents]);
-  
+
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {
       if (prev.includes(id)) {
@@ -91,30 +98,43 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {  const 
                 <FileText size={64} className="text-gray-400" />
               )}
             </div>
-          </div>          
-          <CardContent className="px-3 py-4 flex-grow">
-            <div className="flex justify-between items-start mb-3">
+          </div>
+          <CardContent className="px-3 py-4 flex-grow">            <div className="flex justify-between items-start mb-3">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               <Badge className={`${doc.color} bg-opacity-90 text-white`}>
                 {doc.category}
               </Badge>
-              <button 
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggleFavorite(doc.id);
-                }}
-                className="flex items-center justify-center p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title={favorites.includes(doc.id) ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
-              >
-                {favorites.includes(doc.id) ? (
-                  <FaHeart className="text-red-500 text-lg" />
-                ) : (
-                  <FaRegHeart className="text-gray-400 hover:text-red-500 text-lg" />
-                )}
-              </button>
-            </div>            <h3 className="text-xl font-bold mb-2 line-clamp-2">{doc.title}</h3>
+              {doc.isPremium && doc.score && doc.score > 0 ? (
+                <Badge className="bg-green-600 text-white">
+                  {doc.score} điểm
+                </Badge>
+              ) : (
+                <Badge className="bg-gray-500 text-white">
+                  Miễn phí
+                </Badge>
+              )}
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                toggleFavorite(doc.id);
+              }}
+              className="flex items-center justify-center p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              title={favorites.includes(doc.id) ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
+            >
+              {favorites.includes(doc.id) ? (
+                <FaHeart className="text-red-500 text-lg" />
+              ) : (
+                <FaRegHeart className="text-gray-400 hover:text-red-500 text-lg" />
+              )}
+            </button>
+          </div>
+            <Link href={`/documents/details/${doc.id}`} key={doc.id} className="block">
+              <h3 className="text-xl font-bold mb-2 line-clamp-2">{doc.title}</h3>
+            </Link>
             <div className="relative mb-4">
-              <p 
-                
+              <p
+
                 className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2"
               >
                 {doc.description}
@@ -122,7 +142,11 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {  const 
               {truncatedDescriptions[doc.id] && (
                 <span className="text-gray-600 dark:text-gray-300 text-sm">...</span>
               )}
-            </div>
+            </div>            {doc.averageRating !== undefined && (
+              <div className="mb-3">
+                <StarRating rating={doc.averageRating} size="sm" showText totalRatings={doc.totalRatings} />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-1">
@@ -145,9 +169,9 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {  const 
           </CardContent>
 
           <CardFooter className="p-0">
-            <button className="cursor-pointer text-sm w-full py-3 font-medium text-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">
+            {/* <button className="cursor-pointer text-sm w-full py-3 font-medium text-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">
               Tải xuống
-            </button>
+            </button> */}
           </CardFooter>
         </Card>
       ))}
