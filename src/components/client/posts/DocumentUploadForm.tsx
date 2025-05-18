@@ -12,6 +12,7 @@ import {
     PaperClipIcon,
     XMarkIcon,
     CheckCircleIcon,
+    CurrencyDollarIcon, // Add new icon
 } from '@heroicons/react/24/outline';
 import { IDocumentUpload } from '@/api/axios/document';
 
@@ -40,7 +41,6 @@ const DocumentUploadForm: React.FC = () => {
     const [authors, setAuthors] = useState<Author[]>([]);
     const [publishers, setPublishers] = useState<Publisher[]>([]);
     const [isLoadingOptions, setIsLoadingOptions] = useState(true);
-
     const [formData, setFormData] = useState<{
         title: string;
         description: string;
@@ -49,6 +49,7 @@ const DocumentUploadForm: React.FC = () => {
         categoryId: string;
         file: File | null;
         isPremium: boolean;
+        score: number; // Add score field
     }>({
         title: '',
         description: '',
@@ -57,6 +58,7 @@ const DocumentUploadForm: React.FC = () => {
         categoryId: '',
         file: null,
         isPremium: false,
+        score: 0, // Default to 0 (free document)
     });
 
     // Load categories, authors, and publishers
@@ -110,6 +112,22 @@ const DocumentUploadForm: React.FC = () => {
             setFormData(prev => ({
                 ...prev,
                 [name]: checked
+            }));
+
+            // If isPremium is being toggled and the document becomes free (not premium),
+            // reset score to 0 (free)
+            if (name === 'isPremium' && !checked) {
+                setFormData(prev => ({
+                    ...prev,
+                    score: 0
+                }));
+            }
+        } else if (name === 'score') {
+            // Handle score (ensure it's a number)
+            const numberValue = parseInt(value, 10);
+            setFormData(prev => ({
+                ...prev,
+                [name]: isNaN(numberValue) ? 0 : Math.max(0, numberValue)
             }));
         } else {
             setFormData(prev => ({
@@ -224,11 +242,9 @@ const DocumentUploadForm: React.FC = () => {
             return;
         }
 
-        setIsUploading(true);
-        try {
+        setIsUploading(true); try {
             // In a real implementation, this would be an API call
             await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
-
             console.log('Document upload data:', {
                 title: formData.title,
                 description: formData.description,
@@ -237,7 +253,8 @@ const DocumentUploadForm: React.FC = () => {
                 categoryId: parseInt(formData.categoryId),
                 file: formData.file,
                 isPremium: formData.isPremium,
-                isApproved: false, // Default to pending approval
+                score: formData.score,
+                isApproved: false // Default to pending approval
             });
 
             setIsSuccess(true);
@@ -252,6 +269,7 @@ const DocumentUploadForm: React.FC = () => {
                     categoryId: '',
                     file: null,
                     isPremium: false,
+                    score: 0, // Reset score to 0
                 });
                 setIsSuccess(false);
             }, 3000);
@@ -289,8 +307,8 @@ const DocumentUploadForm: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 py-8">
             <div className="mb-8 text-center">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Đăng tải tài liệu</h1>
-                <p className="text-gray-600 max-w-2xl mx-auto">
-                    Chia sẻ kiến thức của bạn với cộng đồng. Tải lên tài liệu học tập, nghiên cứu để giúp đỡ những người khác trong hành trình học tập của họ.
+                <p className="text-gray-600 text-sm max-w-2xl mx-auto">
+                    Chia sẻ kiến thức của bạn với cộng đồng. Tải lên tài liệu học tập, <br /> nghiên cứu để giúp đỡ những người khác trong hành trình học tập của họ.
                 </p>
             </div>
 
@@ -341,7 +359,7 @@ const DocumentUploadForm: React.FC = () => {
                                     name="title"
                                     value={formData.title}
                                     onChange={handleChange}
-                                    className={`w-full px-3 py-2 border ${errors.title ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                                    className={`text-sm w-full px-3 py-2 border ${errors.title ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                                     placeholder="Nhập tiêu đề tài liệu"
                                 />
                                 {errors.title && (
@@ -360,7 +378,7 @@ const DocumentUploadForm: React.FC = () => {
                                     value={formData.description}
                                     onChange={handleChange}
                                     rows={4}
-                                    className={`w-full px-3 py-2 border ${errors.description ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+                                    className={`text-sm w-full px-3 py-2 border ${errors.description ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
                                     placeholder="Mô tả chi tiết về nội dung tài liệu"
                                 />
                                 {errors.description && (
@@ -466,6 +484,32 @@ const DocumentUploadForm: React.FC = () => {
                                     Đánh dấu là tài liệu cao cấp (chỉ thành viên premium mới xem được)
                                 </label>
                             </div>
+
+                            {/* Điểm số tài liệu */}
+                            <div>
+                                <label htmlFor="score" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Điểm số tài liệu <span className="text-xs text-gray-500">(0 = miễn phí)</span>
+                                </label>
+                                <div className="flex items-center">
+                                    <CurrencyDollarIcon className="h-5 w-5 text-gray-400 mr-2" />
+                                    <input
+                                        type="number"
+                                        id="score"
+                                        name="score"
+                                        min="0"
+                                        value={formData.score}
+                                        onChange={handleChange}
+                                        disabled={!formData.isPremium}
+                                        className={`w-full px-3 py-2 border ${errors.score ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${!formData.isPremium ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                                    />
+                                </div>
+                                {formData.score === 0 && (
+                                    <p className="mt-1 text-sm text-green-600">Tài liệu này sẽ được đọc miễn phí</p>
+                                )}
+                                {errors.score && (
+                                    <p className="mt-1 text-sm text-red-600">{errors.score}</p>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -537,7 +581,7 @@ const DocumentUploadForm: React.FC = () => {
                         <button
                             type="submit"
                             disabled={isUploading}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            className="text-sm px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                         >
                             {isUploading ? (
                                 <div className="flex items-center justify-center">

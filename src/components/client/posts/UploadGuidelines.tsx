@@ -100,7 +100,7 @@ const UploadGuidelines: React.FC = () => {
                         <ExclamationTriangleIcon className="h-6 w-6 text-red-500 mr-2" />
                         Nội dung không được phép
                     </h3>
-                    <ul className="list-disc pl-5 space-y-2 text-red-700">
+                    <ul className="text-sm list-disc pl-5 space-y-2 text-red-700">
                         {prohibited.map((item, index) => (
                             <li key={index}>{item}</li>
                         ))}
@@ -117,21 +117,21 @@ const UploadGuidelines: React.FC = () => {
                                     <span className="h-5 w-5 flex items-center justify-center rounded-full bg-blue-600 text-white text-sm">1</span>
                                 </div>
                                 <h4 className="text-lg font-medium text-gray-900">Đăng tải tài liệu</h4>
-                                <p className="text-gray-600 mt-1">Điền đầy đủ thông tin và tải tệp lên hệ thống.</p>
+                                <p className="text-gray-600 text-sm mt-1">Điền đầy đủ thông tin và tải tệp lên hệ thống.</p>
                             </li>
                             <li className="mb-6">
                                 <div className="absolute -left-3 bg-orange-100 rounded-full p-1">
                                     <span className="h-5 w-5 flex items-center justify-center rounded-full bg-orange-500 text-white text-sm">2</span>
                                 </div>
                                 <h4 className="text-lg font-medium text-gray-900">Xét duyệt</h4>
-                                <p className="text-gray-600 mt-1">Quản trị viên sẽ xem xét nội dung của tài liệu (thường mất 1-2 ngày làm việc).</p>
+                                <p className="text-gray-600 text-sm mt-1">Quản trị viên sẽ xem xét nội dung của tài liệu (thường mất 1-2 ngày làm việc).</p>
                             </li>
                             <li className="mb-6">
                                 <div className="absolute -left-3 bg-green-100 rounded-full p-1">
                                     <span className="h-5 w-5 flex items-center justify-center rounded-full bg-green-600 text-white text-sm">3</span>
                                 </div>
                                 <h4 className="text-lg font-medium text-gray-900">Xuất bản</h4>
-                                <p className="text-gray-600 mt-1">Nếu được duyệt, tài liệu sẽ xuất hiện trên hệ thống và có thể tìm kiếm được.</p>
+                                <p className="text-gray-600 text-sm mt-1">Nếu được duyệt, tài liệu sẽ xuất hiện trên hệ thống và có thể tìm kiếm được.</p>
                             </li>
                         </ol>
                     </div>

@@ -16,6 +16,8 @@ interface Document {
     author: string;
     thumbnailUrl: string;
     color: string;
+    isPremium?: boolean;
+    score?: number;
 }
 
 interface DocumentListProps {
@@ -33,7 +35,7 @@ export default function DocumentList({ documents }: DocumentListProps) {
                 </div>
             ) : (
                 documents.map((document) => (
-                    <Link href={`/documents/${document.id}`} key={document.id} className="block">
+                    <Link href={`/documents/details/${document.id}`} key={document.id} className="block">
                         <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-md transition-all hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-500">
                             <div className="flex items-start gap-4">
                                 <div className={`flex-shrink-0 w-16 h-16 ${document.color} rounded-lg flex items-center justify-center shadow-lg`}>
@@ -41,11 +43,19 @@ export default function DocumentList({ documents }: DocumentListProps) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white truncate">{document.title}</h3>
-                                    <p className="mt-1 text-gray-600 dark:text-gray-300 line-clamp-2">{document.description}</p>
-                                    <div className="mt-2 flex items-center flex-wrap gap-2">
-                                        <Badge variant="outline" className="text-xs font-medium bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800">
-                                            {document.category}
-                                        </Badge>
+                                    <p className="mt-1 text-gray-600 dark:text-gray-300 line-clamp-2 text-sm">{document.description}</p>
+                                    <div className="mt-2 flex items-center flex-wrap gap-2">                                        <Badge variant="outline" className="text-sm font-medium bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800">
+                                        {document.category}
+                                    </Badge>
+                                        {document.isPremium && document.score && document.score > 0 ? (
+                                            <Badge className="text-xs font-medium bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800">
+                                                {document.score} điểm
+                                            </Badge>
+                                        ) : (
+                                            <Badge className="text-xs font-medium bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/30 dark:text-gray-300 dark:border-gray-800">
+                                                Miễn phí
+                                            </Badge>
+                                        )}
                                         <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                                             <CalendarIcon className="h-3.5 w-3.5 mr-1" />
                                             {document.uploadDate}

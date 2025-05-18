@@ -23,6 +23,9 @@ const Header = () => {
             <Link href="/documents" className="font-medium text-sm text-gray-700 hover:text-blue-600">
               Tài liệu
             </Link>
+            <Link href="/posts" className="font-medium text-sm text-gray-700 hover:text-blue-600">
+              Đăng tải
+            </Link>
             <Link href="/publishers" className="font-medium text-sm text-gray-700 hover:text-blue-600">
               Nhà xuất bản
             </Link>
@@ -31,14 +34,14 @@ const Header = () => {
             </Link>
           </div>          {/* Auth Buttons (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="px-4 py-2 rounded text-blue-600 hover:bg-blue-50 text-sm font-medium"
             >
               Đăng nhập
             </Link>
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="px-4 py-2 bg-blue-600 rounded text-white hover:bg-blue-700 text-sm font-medium"
             >
               Đăng ký
@@ -46,7 +49,7 @@ const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
+          <button
             className="md:hidden text-gray-700"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
@@ -66,44 +69,44 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden mt-3 pb-3">
             <div className="flex flex-col space-y-3">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="px-4 py-2 text-gray-700 hover:bg-blue-50 rounded"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Trang chủ
               </Link>
-              <Link 
-                href="/documents" 
+              <Link
+                href="/documents"
                 className="px-4 py-2 text-gray-700 hover:bg-blue-50 rounded"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Tài liệu
               </Link>
-              <Link 
-                href="/publishers" 
+              <Link
+                href="/publishers"
                 className="px-4 py-2 text-gray-700 hover:bg-blue-50 rounded"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Nhà xuất bản
               </Link>
-              <Link 
-                href="/authors" 
+              <Link
+                href="/authors"
                 className="px-4 py-2 text-gray-700 hover:bg-blue-50 rounded"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Tác giả
               </Link>
               <div className="pt-3 border-t border-gray-200 flex flex-col space-y-3">
-                <Link 
-                  href="/login" 
+                <Link
+                  href="/login"
                   className="px-4 py-2 text-center text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Đăng nhập
                 </Link>
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   className="px-4 py-2 text-center bg-blue-600 text-white rounded hover:bg-blue-700"
                   onClick={() => setIsMenuOpen(false)}
                 >

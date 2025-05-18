@@ -19,12 +19,12 @@ const DocumentUploadPage: React.FC = () => {
                                 Chia sẻ kiến thức, <br className="hidden md:block" />
                                 Tạo giá trị cùng cộng đồng
                             </h1>
-                            <p className="mt-4 text-blue-100 max-w-lg">
+                            <p className="text-sm mt-4 text-blue-100 max-w-lg">
                                 Mỗi tài liệu bạn chia sẻ có thể giúp đỡ hàng nghìn sinh viên và người học trong hành trình học tập của họ.
                             </p>
                             <button
                                 onClick={() => setShowGuidelines(!showGuidelines)}
-                                className="mt-6 inline-flex items-center px-5 py-2.5 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                                className="text-sm mt-6 inline-flex items-center px-5 py-2.5 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition-colors font-medium"
                             >
                                 <InformationCircleIcon className="h-5 w-5 mr-2" />
                                 {showGuidelines ? "Ẩn hướng dẫn" : "Xem hướng dẫn đăng tải"}
