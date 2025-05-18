@@ -103,7 +103,9 @@ export const uploadDocument = async (documentData: IDocumentUpload) => {
         formData.append('categoryId', documentData.categoryId.toString()); formData.append('file', documentData.file);
         formData.append('status', documentData.status.toString());
         formData.append('isPremium', documentData.isPremium.toString());
-        formData.append('score', documentData.score.toString());
+        // formData.append('score', documentData.score.toString());
+        formData.append('score', (documentData.score ?? 0).toString());
+
 
         const response = await axiosInstance.post('/document/upload', formData, {
             headers: {

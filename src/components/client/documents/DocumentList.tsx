@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FileIcon, CalendarIcon, DownloadIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import StarRating from './StarRating';
 
 interface Document {
     id: string;
@@ -18,6 +19,8 @@ interface Document {
     color: string;
     isPremium?: boolean;
     score?: number;
+    averageRating?: number;
+    totalRatings?: number;
 }
 
 interface DocumentListProps {
@@ -62,11 +65,15 @@ export default function DocumentList({ documents }: DocumentListProps) {
                                         </span>
                                         <span className="text-xs text-gray-500 dark:text-gray-400">
                                             {document.fileSize} • {document.fileType.toUpperCase()}
-                                        </span>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                                        </span>                                        <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
                                             <DownloadIcon className="h-3.5 w-3.5 mr-1" />
                                             {document.downloadCount.toLocaleString()}
                                         </span>
+                                        {document.averageRating !== undefined && (
+                                            <span className="flex items-center">
+                                                <StarRating rating={document.averageRating} size="sm" showText totalRatings={document.totalRatings} />
+                                            </span>
+                                        )}
                                     </div>
                                 </div>
                             </div>

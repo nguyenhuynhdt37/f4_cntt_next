@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter } from "../../../components/ui/card";
 import Image from "next/image";
 import Link from 'next/link';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import StarRating from './StarRating';
 
 interface Document {
   id: string;
@@ -22,6 +23,8 @@ interface Document {
   color: string;
   isPremium?: boolean;
   score?: number;
+  averageRating?: number;
+  totalRatings?: number;
 }
 
 interface DocumentGridProps {
@@ -139,7 +142,11 @@ export default function DocumentGrid({ documents }: DocumentGridProps) {
               {truncatedDescriptions[doc.id] && (
                 <span className="text-gray-600 dark:text-gray-300 text-sm">...</span>
               )}
-            </div>
+            </div>            {doc.averageRating !== undefined && (
+              <div className="mb-3">
+                <StarRating rating={doc.averageRating} size="sm" showText totalRatings={doc.totalRatings} />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-1">
