@@ -6,6 +6,7 @@ import PDFPreview from "@/components/client/documents/details/PDFPreview";
 import DocumentInfo from "@/components/client/documents/details/DocumentInfo";
 import RelatedDocuments from "@/components/client/documents/details/RelatedDocuments";
 import DocumentComments from "@/components/client/documents/details/DocumentComments";
+import DocumentRating from "@/components/client/documents/details/DocumentRating";
 import Link from "next/link";
 
 interface PageProps {
@@ -49,7 +50,9 @@ export default function DocumentDetailPage({ params }: PageProps) {
           isbn: "978-604-XX-XXXX-X",
           pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
           isPremium: false,
-          score: 0 // Miễn phí tải liệu
+          score: 0, // Miễn phí tải liệu
+          averageRating: 4.2,
+          totalRatings: 45
         };
       } else if (params.id === "2") {
         // Tài liệu premium với 10 điểm
@@ -66,14 +69,15 @@ export default function DocumentDetailPage({ params }: PageProps) {
           author: "ThS. Trần Thị B",
           pageCount: 85,
           estimatedReadTime: "3 giờ đọc",
-          color: "bg-gradient-to-r from-purple-500 to-pink-400",
-          language: "Tiếng Việt",
+          color: "bg-gradient-to-r from-purple-500 to-pink-400", language: "Tiếng Việt",
           publisher: "NXB Công nghệ",
           publicationDate: "2023-11-15",
           isbn: "978-604-XX-XXXX-Y",
           pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
           isPremium: true,
-          score: 10 // Cần 10 điểm để tải
+          score: 10, // Cần 10 điểm để tải
+          averageRating: 4.8,
+          totalRatings: 75
         };
       } else if (params.id === "3") {
         // Tài liệu premium với 50 điểm
@@ -90,14 +94,15 @@ export default function DocumentDetailPage({ params }: PageProps) {
           author: "PGS.TS Lê Văn C",
           pageCount: 150,
           estimatedReadTime: "5 giờ đọc",
-          color: "bg-gradient-to-r from-green-500 to-emerald-400",
-          language: "Tiếng Việt",
+          color: "bg-gradient-to-r from-green-500 to-emerald-400", language: "Tiếng Việt",
           publisher: "NXB ĐHQG Hà Nội",
           publicationDate: "2023-06-15",
           isbn: "978-604-XX-XXXX-Z",
           pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
           isPremium: true,
-          score: 50 // Cần 50 điểm để tải
+          score: 50, // Cần 50 điểm để tải
+          averageRating: 4.5,
+          totalRatings: 32
         };
       } else {
         // Mặc định nếu ID không khớp
@@ -114,13 +119,15 @@ export default function DocumentDetailPage({ params }: PageProps) {
           author: "TS. Nguyễn Văn A",
           pageCount: 120,
           estimatedReadTime: "4 giờ đọc",
-          color: "bg-gradient-to-r from-blue-500 to-cyan-400",
-          language: "Tiếng Việt",
+          color: "bg-gradient-to-r from-blue-500 to-cyan-400", language: "Tiếng Việt",
           publisher: "NXB Giáo dục",
           publicationDate: "2022-05-20",
-          isbn: "978-604-XX-XXXX-X", pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
+          isbn: "978-604-XX-XXXX-X",
+          pdfUrl: "https://www.africau.edu/images/default/sample.pdf",
           isPremium: false,
-          score: 0
+          score: 0,
+          averageRating: 3.9,
+          totalRatings: 28
         }
       }
 
@@ -219,10 +226,18 @@ export default function DocumentDetailPage({ params }: PageProps) {
             previewPages={3} // Chỉ cho phép xem 3 trang
             totalPages={document.pageCount}
             documentId={document.id}
-          />
-        </div>
+          />        </div>
         <div className="lg:col-span-1">
           <DocumentInfo document={document} />
+          <DocumentRating
+            documentId={document.id}
+            averageRating={document.averageRating || 0}
+            totalRatings={document.totalRatings || 0}
+            onRatingSubmit={(rating) => {
+              console.log(`Đã đánh giá tài liệu ${document.id} với ${rating} sao`);
+              // Trong môi trường thực tế, đây sẽ là một API call để lưu đánh giá
+            }}
+          />
         </div>
       </div>
       <RelatedDocuments documents={relatedDocuments} />
